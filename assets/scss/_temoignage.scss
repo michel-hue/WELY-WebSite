@@ -1,0 +1,120 @@
+/* === Témoignages Modernisés === */
+.testimonials {
+  padding: 80px 20px;
+  text-align: center;
+
+  .testimonials-header {
+    h2 {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #30221A;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #6d6d6d;
+      margin-bottom: 50px;
+    }
+  }
+
+  .testimonials-container {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+
+    .testimonial-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 25px;
+      width: 320px;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+      text-align: left;
+
+      &:hover {
+        transform: translateY(-8px);
+      }
+
+      .quote {
+        font-size: 50px;
+        color: #D5CCC0;
+        position: absolute;
+        top: 15px;
+        left: 20px;
+        font-family: Georgia, serif;
+      }
+
+      .testimonial-text {
+        margin: 20px 0;
+        font-size: 16px;
+        color: #444;
+        line-height: 1.6;
+        padding-left: 15px;
+      }
+
+      .client-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 10px;
+
+        .avatar {
+          width: 55px;
+          height: 55px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        h3 {
+          font-size: 16px;
+          margin: 0;
+          color: #30221A;
+        }
+
+        .stars {
+          font-size: 14px;
+          color: #f4b400;
+        }
+      }
+    }
+  }
+
+  .more-btn {
+    margin-top: 40px;
+    padding: 14px 30px;
+    border: none;
+    background: #30221A;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #42362E;
+    }
+  }
+
+  /* === Responsive === */
+  @media (max-width: 768px) {
+    .testimonials-header {
+      h2 {
+        font-size: 1.6rem;
+      }
+
+      p {
+        font-size: 1rem;
+        margin-bottom: 30px;
+      }
+    }
+
+    .testimonials-container {
+      .testimonial-card {
+        width: 100%;
+      }
+    }
+  }
+}

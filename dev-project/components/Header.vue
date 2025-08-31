@@ -4,8 +4,8 @@
     <div class="top-bar">
       <p>Bienvenue sur Wely, trouvez la résidence idéal rapidement !</p>
       <div class="top-actions">
-        <a href="#" >Sign in</a>
-        <a href="#" class="lien">Sign up</a>
+        <a href="/login" >Sign in</a>
+        <a href="/register" class="lien">Sign up</a>
       </div>
     </div>
 
@@ -17,15 +17,20 @@
       </div>
 
       <!-- Navigation -->
-      <nav>
-        <ul :class="['nav', { 'active': mobileMenu }]">
-          <li><a href="#" class="active">Home</a></li>
-          <li class="dropdown">
-            <a href="#">About</a>
-          </li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </nav>
+<nav>
+  <ul :class="['nav', { 'active': mobileMenu }]">
+    <li>
+      <router-link to="/" exact-active-class="active"><i class="far fa-house"></i> Home</router-link>
+    </li>
+    <li class="dropdown">
+      <router-link to="/about" exact-active-class="active"><i class="far fa-question-circle"></i> About</router-link>
+    </li>
+    <li>
+      <router-link to="/contact" exact-active-class="active"><i class="far fa-address-book"></i> Contact</router-link>
+    </li>
+  </ul>
+</nav>
+
 
       <!-- Hamburger Mobile -->
       <div class="hamburger" @click="mobileMenu = !mobileMenu">
@@ -40,9 +45,10 @@
     <section class="banner">
       <div class="overlay">
         <div class="accroche">
-          <h1>Réservez  <br> la Residence de vos rêves</h1>
-          <span>Choisissez parmi nos résidences confortables et adaptées à vos besoins</span>
-          <button class="cta3">Decouvrir</button>
+        <h1>Devenez <br> Propriétaire sur Wely</h1>
+<span>Publiez vos biens et commencez à générer des revenus en toute simplicité</span>
+<button class="cta3">Commencer</button>
+
         </div>
       </div>
     </section>

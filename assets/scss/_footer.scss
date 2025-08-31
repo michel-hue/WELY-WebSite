@@ -1,0 +1,242 @@
+// Variables
+$footer-bg: #F8EFE3;
+$footer-radius: 20px 20px 0 0;
+$footer-shadow: 0 -10px 40px rgba(0, 0, 0, 0.05);
+$footer-padding: 50px 80px 20px;
+$footer-gap: 40px;
+
+// Breakpoints
+$bp-tablet: 900px;
+$bp-mobile: 768px;
+$bp-small: 600px;
+
+
+  // FOOTER (base)
+
+.main-footer {
+  background-color: darken($footer-bg, 10%);
+  border-radius: $footer-radius;
+  box-shadow: $footer-shadow;
+  padding: $footer-padding;
+  margin-top: 50px;
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  gap: $footer-gap;
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+    flex-wrap: wrap;
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+    min-width: 250px;
+
+    .brand-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-name {
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--primary-color);
+    }
+
+    .brand-desc {
+      font-size: 14px;
+      color: var(--light-text-color);
+      line-height: 1.6;
+    }
+
+    .logo {
+      width: 40px;
+      height: auto;
+    }
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 40px;
+    flex: 2;
+    justify-content: space-around;
+
+    .links-column {
+      h4 {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          margin-bottom: 10px;
+
+          a {
+            text-decoration: none;
+            color: var(--light-text-color);
+            font-size: 14px;
+            transition: color 0.2s ease;
+
+            &:hover {
+              color: var(--primary-color);
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .footer-social {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 150px;
+
+    .social-icons {
+      display: flex;
+      gap: 15px;
+
+      a {
+        color: var(--light-text-color);
+        font-size: 22px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          color: var(--primary-color);
+          transform: translateY(-3px);
+        }
+      }
+    }
+  }
+
+  .footer-copyright {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--soft-gray);
+
+    p {
+      font-size: 12px;
+      color: var(--light-text-color);
+    }
+  }
+}
+
+/* =========================
+   RESPONSIVE
+   (regroupé à la fin)
+========================= */
+
+/* Tablettes (max 900px) */
+@media (max-width: $bp-tablet) {
+  .main-footer {
+    padding: 40px 40px 20px;
+    gap: 32px;
+
+    .footer-content {
+      gap: 30px;
+      justify-content: center;
+    }
+
+    .footer-brand {
+      .brand-name { font-size: 22px; }
+      .brand-desc { font-size: 13px; }
+    }
+
+    .footer-links {
+      gap: 24px;
+      justify-content: space-between;
+
+      .links-column {
+        h4 { font-size: 15px; }
+        ul li a { font-size: 13px; }
+      }
+    }
+
+    .footer-social {
+      .social-icons a { font-size: 20px; }
+    }
+  }
+}
+
+/* Mobiles (max 768px) */
+@media (max-width: $bp-mobile) {
+  .main-footer {
+    padding: 32px 20px 16px;
+    gap: 24px;
+
+    .footer-content {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 24px;
+    }
+
+    .footer-brand {
+      align-items: center;
+      min-width: auto;
+
+      .brand-info {
+        justify-content: center;
+      }
+    }
+
+    .footer-links {
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+
+      .links-column {
+        text-align: center;
+
+        h4 { margin-bottom: 12px; }
+
+        ul li {
+          margin-bottom: 8px;
+
+          a { font-size: 13px; }
+        }
+      }
+    }
+
+    .footer-social {
+      align-items: center;
+
+      .social-icons {
+        justify-content: center;
+        a { font-size: 19px; }
+      }
+    }
+
+    .footer-copyright p {
+      font-size: 11px;
+    }
+  }
+}
+
+/* Petits mobiles (max 600px) */
+@media (max-width: $bp-small) {
+  .main-footer {
+    padding: 28px 16px 14px;
+
+    .footer-links .links-column ul li a {
+      font-size: 12.5px;
+    }
+
+    .footer-brand .brand-name { font-size: 20px; }
+  }
+}

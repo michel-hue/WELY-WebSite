@@ -1,0 +1,366 @@
+//  Variables
+$button-color: #30221A;
+$background: #FFF;
+$color-text1: #F8EFE3;
+$color-text-hover: #D5CCC0;
+$background-button: #FFF;
+
+
+.contenaire2 {
+    .texts {
+        display: flex;
+        gap: 100px;
+        justify-content: center;
+        align-items: center;
+        margin-top: 100px;
+
+        .text1 {
+            p {
+                color: $button-color;
+                font-weight: bold;
+            }
+
+            span {
+                font-size: 40px;
+                font-weight: bold;
+
+                .a {
+                    color: darken($color-text1, 30%);
+                }
+
+                .b {
+                    color: $button-color;
+                }
+            }
+        }
+
+        .text2 {
+            font-weight: 100;
+            font-size: small;
+            margin-top: 50px;
+            color: gray;
+        }
+    }
+
+    .cards {
+        display: flex;
+        gap: 30px;
+        margin-left: 150px;
+        margin-top: 100px;
+
+        .image1 {
+            img {
+                width: 700px;
+                height: 450px;
+                border-radius: 5%;
+            }
+        }
+    }
+
+    .image2 {
+        img {
+            width: 450px;
+            height: 450px;
+            border-radius: 5%;
+        }
+    }
+
+    .texts2 {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 100px;
+
+        .text3 {
+            font-size: 30px;
+            font-weight: bold;
+            color: $button-color;
+        }
+
+        .text4 {
+            span {
+                font-weight: 100;
+                font-size: 20px;
+                font-weight: bold;
+                margin-top: 50px;
+                color: #333;
+            }
+
+            .text5 {
+                font-size: 15px;
+                font-weight: 200;
+                color: gray;
+                text-align: justify;
+                text-justify: inter-word;
+            }
+        }
+    }
+
+    // ---- Section chiffres ----
+    .stats {
+        display: block;
+        margin: 100px auto;
+        max-width: 1000px;
+        text-align: center;
+
+        .title {
+            color: $button-color;
+            font-weight: bold;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-around;
+
+            h2 {
+                font-size: 40px;
+                font-weight: bold;
+                color: $button-color;
+            }
+
+            p {
+                color: gray;
+                font-size: 14px;
+            }
+        }
+
+        .trait {
+            width: 90%;
+            height: 2px;
+            background-color: $color-text-hover;
+            margin: 20px auto;
+        }
+    }
+
+    // ---- Call to action ----
+    .cta {
+        background: darken($color-text1, 15%);
+        border-radius: 20px;
+        padding: 50px;
+        margin: 80px auto;
+        max-width: 1100px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+
+        .cta-text {
+            h2 {
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            p {
+                font-size: 16px;
+                color: lighten(white, 10%);
+            }
+        }
+
+        .cta-btn {
+            button {
+                background: white;
+                color: $button-color;
+                padding: 15px 30px;
+                border-radius: 30px;
+                font-weight: bold;
+                border: none;
+                cursor: pointer;
+                transition: 0.3s ease;
+
+                &:hover {
+                    background: $button-color;
+                    color: white;
+                }
+            }
+        }
+    }
+
+}
+
+// Tablette (~950px)
+@media (max-width: 950px) {
+  .contenaire2 {
+    .texts {
+      flex-direction: column;
+      gap: 30px;
+      text-align: center;
+      margin-top: 50px;
+      margin-left: 0;
+    }
+
+    .cards {
+      flex-direction: column;
+      gap: 30px;
+      margin-left: 0;
+      margin-top: 50px;
+
+      .image1 img,
+      .image2 img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    .texts2 {
+      flex-direction: column;
+      gap: 30px;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .stats {
+      max-width: 100%;
+      .stat-item {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        h2 {
+          font-size: 36px;
+        }
+
+        p {
+          font-size: 14px;
+        }
+
+        &:not(:last-child)::after {
+          width: 80%;
+          left: 10%;
+          transform: none;
+        }
+      }
+    }
+
+    .cta {
+      flex-direction: column;
+      text-align: center;
+      gap: 20px;
+    }
+  }
+}
+
+// Mobile moyen (~768px)
+@media (max-width: 768px) {
+  .contenaire2 {
+    margin-top: 90px;
+    .texts {
+      margin-top: 30px;
+      gap: 20px;
+    }
+
+    .cards {
+      margin-top: 30px;
+      gap: 20px;
+
+      .image1 img,
+      .image2 img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    .texts2 {
+      gap: 20px;
+      .text3 {
+        font-size: 24px;
+      }
+
+      .text4 span {
+        font-size: 16px;
+      }
+
+      .text5 {
+        font-size: 12px;
+      }
+    }
+
+    .stats {
+      .stat-item {
+        h2 {
+          font-size: 28px;
+        }
+        p {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .cta {
+      padding: 25px;
+      .cta-text h2 {
+        font-size: 22px;
+      }
+      .cta-text p {
+        font-size: 14px;
+      }
+      .cta-btn button {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// Petit mobile (<600px)
+@media (max-width: 600px) {
+  .contenaire2 {
+    margin-top: 100px;
+    .texts {
+      gap: 15px;
+      margin-top: 20px;
+
+      .text1 span {
+        font-size: 28px;
+      }
+    }
+
+    .cards {
+      gap: 15px;
+      margin-left: 0;
+
+      .image1 img,
+      .image2 img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    .texts2 {
+      .text3 {
+        font-size: 20px;
+      }
+      .text4 span {
+        font-size: 14px;
+      }
+      .text5 {
+        font-size: 11px;
+      }
+    }
+
+    .stats {
+      .stat-item h2 {
+        font-size: 24px;
+      }
+      .stat-item p {
+        font-size: 11px;
+      }
+    }
+
+    .cta {
+      padding: 20px;
+
+      .cta-text h2 {
+        font-size: 20px;
+      }
+
+      .cta-text p {
+        font-size: 12px;
+      }
+
+      .cta-btn button {
+        padding: 10px 18px;
+        font-size: 12px;
+      }
+    }
+  }
+}

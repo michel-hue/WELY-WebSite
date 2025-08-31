@@ -1,9 +1,11 @@
 //  Variables
 $button-color: #30221A;
-$background: white;
-$color-text1: black;
-$color-text-hover: #F8EFE3;
-$background-button: #d5ccc0a9;
+$background: #FFF;
+$color-text1: #F8EFE3;
+$color-text-hover: #D5CCC0;
+$background-button: #FFF;
+
+
 
 
 //Global
@@ -67,7 +69,10 @@ $background-button: #d5ccc0a9;
         }
 
     }
-    //Mission
+
+
+    }
+        //Mission
    .mission {
   padding: 60px 20px;
   text-align: center;
@@ -132,10 +137,78 @@ $background-button: #d5ccc0a9;
   }
 }
 
-    }
-
 
 @keyframes scroll-left {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); } /* moitié du contenu → boucle fluide */
+}
+
+
+/* ===== VARIABLES ===== */
+$breakpoint-mobile: 600px;
+$breakpoint-tablet: 992px;
+$breakpoint-medium: 768px;
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: $breakpoint-tablet) {
+  .features-track {
+    gap: 30px;
+    animation-duration: 25s;
+  }
+
+  .feature {
+    width: 240px;
+    padding: 18px;
+  }
+
+  .mission {
+    h2 {
+      font-size: 28px;
+    }
+    .intro {
+      font-size: 16px;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .features-track {
+    gap: 20px;
+    animation-duration: 30s; // défilement plus lent
+  }
+
+  .feature {
+    width: 85%; // occupe presque tout l'écran
+    padding: 15px;
+  }
+
+  .mission {
+    h2 {
+      font-size: 24px;
+    }
+    .intro {
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-medium) {
+  .intro {
+    flex-direction: column;
+    text-align: center;
+
+    .image img {
+      width: 80%;
+    }
+  }
+
+  .service-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card2 {
+    flex: 1 1 80%;
+  }
 }

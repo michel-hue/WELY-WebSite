@@ -1,0 +1,123 @@
+//  Variables
+$button-color: #30221A;
+$background: #f9f9f9;
+$color-text1: #F8EFE3;
+$color-text-hover: #D5CCC0;
+$background-button: #FFF;
+$text: #444;
+
+.become-owner {
+  background: $background;
+  padding: 80px 20px;
+  text-align: center;
+
+  .ad-banner {
+    max-width: 1100px;
+    margin: auto;
+    padding: 50px 30px;
+    background: $background;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+
+    .ad-content {
+      margin-bottom: 40px;
+
+      h2 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 20px;
+
+        span {
+          color: $button-color;
+        }
+      }
+
+      p {
+        font-size: 18px;
+        color: $text;
+        max-width: 700px;
+        margin: 0 auto 30px auto;
+        line-height: 1.6;
+      }
+
+      .owner-btn {
+        background: $button-color;
+        color: $background-button;
+        padding: 16px 36px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: $button-color;
+          transform: translateY(-3px);
+        }
+      }
+    }
+
+    /* Slider */
+    .ad-slider {
+      position: relative;
+      overflow: hidden;
+      height: 220px;
+
+      .slide-track {
+        display: flex;
+        width: calc(250px * 8);
+        animation: scroll 25s linear infinite;
+      }
+
+      .slide {
+        width: 250px;
+        height: 200px;
+        margin: 0 15px;
+
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 14px;
+          object-fit: cover;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+}
+
+/* Animation défilement */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-250px * 4));
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .become-owner {
+    .ad-banner {
+      padding: 40px 20px;
+
+      .ad-content h2 {
+        font-size: 24px;
+      }
+      .ad-content p {
+        font-size: 15px;
+      }
+
+      .ad-slider {
+        height: 160px;
+        .slide {
+          width: 180px;
+          height: 140px;
+        }
+      }
+    }
+  }
+}

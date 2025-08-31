@@ -1,6 +1,6 @@
 <template>
-    <div class="Container">
-   <div class="Headers">
+    <div class="container-contact">
+           <div class="Headers">
     <div class="top-bar">
       <p>Bienvenue sur Wely, trouvez la résidence idéal rapidement !</p>
       <div class="top-actions">
@@ -40,15 +40,17 @@
       </div>
     </header>
 </div>  
-<section><About/></section>
-   <footer> <Footer/></footer>
+<section><Contact/></section>
+<section><Footer/></section>
+
+ 
     </div>
 </template>
 
 <script setup lang="ts">
 import Footer from '~/components/Footer.vue';
-import About from '~/components/About.vue';
 import { ref, onMounted } from 'vue'
+import Contact from '~/components/contact.vue';
 
 const isFixed = ref(false)
 const mobileMenu = ref(false)

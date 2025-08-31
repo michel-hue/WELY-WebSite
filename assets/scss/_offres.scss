@@ -1,0 +1,251 @@
+// Variables
+$primary-color: #30221A;
+$secondary-color: #42362E;
+$text-gray: gray;
+$yellow-star: #f5b50a;
+
+// TITRES
+.section-title1 {
+  text-align: left;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 50px 0 30px;
+  color: $primary-color;
+  margin-left: 30px;
+}
+
+  .section-intro{
+    text-align: center;
+    color: $secondary-color;
+    font-weight: bold;
+  }
+
+.section-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 50px 0 30px;
+  color: $primary-color;
+}
+
+// MEILLEURES OFFRES
+.cards-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+
+  .card {
+    width: 400px;
+    height: auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: white;
+    transition: transform 0.3s ease;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+      transform: translateY(-8px);
+    }
+
+    img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 15px;
+
+      h3 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        color: $primary-color;
+      }
+
+      p {
+        margin: 0 0 12px;
+        color: $text-gray;
+        font-size: 15px;
+      }
+
+      .price {
+        display: block;
+        font-weight: bold;
+        color: $primary-color;
+        margin-bottom: 12px;
+      }
+
+      .rating {
+        font-size: 14px;
+        color: $yellow-star;
+        margin: 5px 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        span {
+          color: #555;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+// CTA Boutons
+.cta-small {
+  padding: 10px 18px;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    background: $secondary-color;
+  }
+}
+
+.more-btn1 {
+  text-align: center;
+  margin-top: 30px;
+  background-color: white;
+
+  &:hover {
+    background-color: white;
+  }
+}
+
+.cta2 {
+  padding: 10px 20px;
+  background-color: $primary-color;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: $secondary-color;
+  }
+}
+
+// OFFRES PAR VILLES
+.cities-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+
+  .city-card {
+    position: relative;
+    width: 320px;
+    height: 220px;
+    overflow: hidden;
+    border-radius: 12px;
+    cursor: pointer;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.1);
+    }
+
+    .overlay-city {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      h3 {
+        font-size: 22px;
+        margin-bottom: 6px;
+      }
+
+      p {
+        font-size: 15px;
+      }
+    }
+  }
+}
+
+/* ======================= */
+/* ===== RESPONSIVE ====== */
+/* ======================= */
+@media (max-width: 768px) {
+  .section-title,
+  .section-title1 {
+    font-size: 22px;
+    margin: 30px 0 20px;
+    text-align: center;
+    margin-left: 0;
+  }
+
+  .cards-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    .card {
+      width: 90%;
+      max-width: 350px;
+
+      img {
+        height: 180px;
+      }
+
+      .card-body {
+        h3 {
+          font-size: 18px;
+        }
+        p {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .cities-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    .city-card {
+      width: 90%;
+      max-width: 340px;
+      height: 200px;
+
+      .overlay-city {
+        h3 {
+          font-size: 20px;
+        }
+        p {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .cta2 {
+    font-size: 16px;
+    padding: 10px 18px;
+  }
+}
