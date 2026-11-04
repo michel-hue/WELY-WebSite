@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { DataSource, type DataSourceOptions } from 'typeorm';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { SnakeNamingStrategy } from './snake-naming.strategy.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -17,18 +18,20 @@ export function dataSourceOptions(url: string, ssl: boolean, schema = 'public'):
     ssl: ssl ? { rejectUnauthorized: false } : false,
     schema,
     synchronize: false,
+    namingStrategy: new SnakeNamingStrategy(),
     migrationsRun: true,
     migrations: [join(here, 'migrations', '*.{js,ts}')],
-    entities: [join(here, '..', '**', '*.entity.{js,ts}')],
     extra: schema === 'public' ? {} : { options: `-c search_path=${schema},public` },
   };
 }
 
 // Utilisé par `npm run migration:*` (à exécuter après `npm run build`).
-export default new DataSource(
-  dataSourceOptions(
+export default new DataSource({
+  ...dataSourceOptions(
     process.env.DATABASE_URL ?? '',
     (process.env.DATABASE_SSL ?? 'true') !== 'false',
     process.env.DATABASE_SCHEMA ?? 'public',
   ),
-);
+  // L'application charge ses entités via autoLoadEntities ; la CLI les trouve ici.
+  entities: [join(here, '..', '**', '*.entity.js')],
+} as DataSourceOptions);

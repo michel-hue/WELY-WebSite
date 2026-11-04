@@ -29,6 +29,9 @@ const testEnv = {
   JWT_SECRET: 'test-secret',
   STORAGE_DRIVER: 'local',
   MEDIA_DIR: './.test-media',
+  // Les tests enchaînent beaucoup de connexions depuis la même IP.
+  THROTTLE_LIMIT: '100000',
+  OTP_IP_LIMIT_PER_MIN: '100000',
 };
 // Le globalSetup tourne dans ce processus : il lit process.env.
 Object.assign(process.env, testEnv);
