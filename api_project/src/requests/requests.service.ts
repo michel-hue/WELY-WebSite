@@ -116,7 +116,8 @@ export class RequestsService {
       await this.ds.transaction(async (m) => {
         // Les acceptations d'une même annonce sont traitées l'une après l'autre.
         await m.query(`SELECT id FROM listings WHERE id = $1 FOR UPDATE`, [listing.id]);
-        const [current] = await m.query(`SELECT status, refusal_reason FROM listing_requests WHERE id = $1`, [id]);
+        // Verrou sur la demande : une annulation simultanée de l'acheteur attend ou l'emporte.
+        const [current] = await m.query(`SELECT status, refusal_reason FROM listing_requests WHERE id = $1 FOR UPDATE`, [id]);
         if (current.status === 'refused' && current.refusal_reason === 'dates_unavailable') throw DATES_TAKEN();
         if (current.status !== 'pending') throw this.notPending();
 
@@ -134,7 +135,12 @@ export class RequestsService {
             [listing.id, id, request.checkIn, request.checkOut],
           );
         }
-        await m.update(ListingRequest, { id }, { status: 'accepted', sellerMessage: message?.trim() || null, decidedAt: new Date() });
+        const { affected } = await m.update(
+          ListingRequest,
+          { id, status: 'pending' },
+          { status: 'accepted', sellerMessage: message?.trim() || null, decidedAt: new Date() },
+        );
+        if (!affected) throw this.notPending();
       });
     } catch (e) {
       if (pgCode(e) === '23P01') {
@@ -246,6 +252,7 @@ export class RequestsService {
   private async cancelRequests(ids: string[]): Promise<{ id: string; listing_id: string }[]> {
     if (!ids.length) return [];
     const rows: { id: string; listing_id: string }[] = await this.ds.transaction(async (m) => {
+      await m.query(`SELECT id FROM listing_requests WHERE id = ANY($1) FOR UPDATE`, [ids]);
       const [updated] = await m.query(
         `UPDATE listing_requests SET status = 'cancelled', decided_at = now()
          WHERE id = ANY($1) AND status IN ('pending', 'accepted') RETURNING id, listing_id`,

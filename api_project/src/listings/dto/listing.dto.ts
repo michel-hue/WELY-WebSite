@@ -11,6 +11,7 @@ import {
   IsString,
   Length,
   Matches,
+  Max,
   MaxLength,
   Min,
   ValidateIf,
@@ -18,6 +19,10 @@ import {
 } from 'class-validator';
 import { AMENITIES, PROPERTY_TYPES, type Amenity, type PropertyType } from '../listing.entity.js';
 import { PaginationQuery } from '../../common/pagination/paginated.js';
+
+/** Plus grand entier PostgreSQL « int » (loyers, prix par nuit). */
+const MAX_INT = 2_147_483_647;
+const TOO_HIGH = { message: 'Montant trop élevé.' };
 
 export class LocationDto {
   @ApiProperty({ example: 5.3599 })
@@ -33,6 +38,7 @@ export class MonthlyOfferDto {
   @ApiProperty({ example: 350000, description: 'Loyer mensuel en FCFA' })
   @IsInt()
   @Min(1)
+  @Max(MAX_INT, TOO_HIGH)
   rent!: number;
 
   @ApiPropertyOptional({ example: '3 mois de caution, 2 mois d’avance' })
@@ -46,6 +52,7 @@ export class NightlyOfferDto {
   @ApiProperty({ example: 30000, description: 'Prix par nuit en FCFA' })
   @IsInt()
   @Min(1)
+  @Max(MAX_INT, TOO_HIGH)
   price!: number;
 
   @ApiPropertyOptional({ example: 2 })
@@ -59,6 +66,7 @@ export class SaleOfferDto {
   @ApiProperty({ example: 85000000, description: 'Prix de vente en FCFA' })
   @IsInt()
   @Min(1)
+  @Max(Number.MAX_SAFE_INTEGER, TOO_HIGH)
   price!: number;
 }
 

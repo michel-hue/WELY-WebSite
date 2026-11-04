@@ -38,6 +38,13 @@ export class SellerListingsController {
     return this.listings.toDto(await this.listings.reactivate(u.id, id, dto.until));
   }
 
+  @Post('listings/:id/extend')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Prolonger une annonce en ligne (nouvelle date de fin, ou permanente)' })
+  async extend(@CurrentUser() u: AuthUser, @Param('id', ParseUUIDPipe) id: string, @Body() dto: PublishDto) {
+    return this.listings.toDto(await this.listings.extend(u.id, id, dto.until));
+  }
+
   @Post('listings/:id/deactivate')
   @HttpCode(200)
   @ApiOperation({ summary: 'Mettre hors ligne' })

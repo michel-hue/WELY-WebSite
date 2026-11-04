@@ -36,6 +36,7 @@ const testEnv = {
   // Les tests enchaînent beaucoup de connexions depuis la même IP.
   THROTTLE_LIMIT: '100000',
   OTP_IP_LIMIT_PER_MIN: '100000',
+  TRUST_PROXY: '1',
   NODE_OPTIONS: [process.env.NODE_OPTIONS, '--dns-result-order=ipv4first'].filter(Boolean).join(' '),
 };
 // Le globalSetup tourne dans ce processus : il lit process.env.

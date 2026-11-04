@@ -12,6 +12,8 @@ export interface Env {
   JWT_ACCESS_TTL: string;
   REFRESH_TTL_DAYS: number;
   CORS_ORIGIN?: string;
+  /** Valeur Express « trust proxy » : nombre de proxys devant l'API (ex. 1), true, ou false. */
+  TRUST_PROXY: number | boolean;
   OTP_PROVIDER: 'console' | 'twilio';
   TWILIO_ACCOUNT_SID?: string;
   TWILIO_AUTH_TOKEN?: string;
@@ -53,6 +55,12 @@ export function validateEnv(raw: Record<string, string | undefined>): Env {
     PUSH_PROVIDER: oneOf(raw.PUSH_PROVIDER, ['log', 'fcm'] as const, 'log', 'PUSH_PROVIDER'),
     STORAGE_DRIVER: oneOf(raw.STORAGE_DRIVER, ['local', 's3'] as const, 'local', 'STORAGE_DRIVER'),
     MEDIA_DIR: raw.MEDIA_DIR ?? './media',
+    TRUST_PROXY:
+      raw.TRUST_PROXY === undefined || raw.TRUST_PROXY === '' || raw.TRUST_PROXY === 'false'
+        ? false
+        : raw.TRUST_PROXY === 'true'
+          ? true
+          : Number(raw.TRUST_PROXY),
   };
   return env;
 }

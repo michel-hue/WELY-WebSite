@@ -13,6 +13,7 @@ import {
   evaluateOtpAttempt,
   generateOtp,
   hashOtp,
+  OTP_MAX_ATTEMPTS,
   OTP_MAX_SENDS_PER_HOUR,
   OTP_RESEND_COOLDOWN_MS,
   OTP_TTL_MS,
@@ -29,6 +30,8 @@ export interface AuthSession {
 
 const OTP_INVALID = () => unauthorized('OTP_INVALID', 'Code incorrect ou expiré.');
 const REFRESH_INVALID = () => unauthorized('REFRESH_INVALID', 'Session expirée, reconnectez-vous.');
+/** Délai pendant lequel un jeton tout juste remplacé peut encore servir (requête rejouée). */
+const REFRESH_REUSE_GRACE_MS = 30_000;
 const sha256 = (s: string) => createHash('sha256').update(s).digest('hex');
 
 @Injectable()
@@ -81,14 +84,22 @@ export class AuthService {
     const challenge = await this.challenges.findOne({ where: { phone, consumedAt: IsNull() }, order: { createdAt: 'DESC' } });
     if (!challenge) throw OTP_INVALID();
 
-    const outcome = evaluateOtpAttempt(challenge, code, new Date(), this.secret);
-    if (outcome === 'too_many') {
-      throw tooMany('OTP_TOO_MANY_ATTEMPTS', 'Trop d’essais. Demandez un nouveau code.');
-    }
-    if (outcome === 'invalid') {
-      await this.challenges.increment({ id: challenge.id }, 'attempts', 1);
+    // Chaque essai est réservé atomiquement : des essais envoyés en parallèle ne dépassent pas la limite.
+    const [reserved]: [{ attempts: number }[], number] = await this.challenges.query(
+      `UPDATE otp_challenges SET attempts = attempts + 1
+       WHERE id = $1 AND attempts < $2 AND consumed_at IS NULL AND expires_at > now()
+       RETURNING attempts`,
+      [challenge.id, OTP_MAX_ATTEMPTS],
+    );
+    if (!reserved.length) {
+      if (challenge.attempts >= OTP_MAX_ATTEMPTS || challenge.expiresAt.getTime() > Date.now()) {
+        throw tooMany('OTP_TOO_MANY_ATTEMPTS', 'Trop d’essais. Demandez un nouveau code.');
+      }
       throw OTP_INVALID();
     }
+    // L'essai réservé est compté : on évalue le code avec le compteur d'avant.
+    const outcome = evaluateOtpAttempt({ ...challenge, attempts: reserved[0].attempts - 1 }, code, new Date(), this.secret);
+    if (outcome !== 'ok') throw OTP_INVALID();
 
     let user = await this.users.findActiveByPhone(phone);
     const name = rawName?.trim();
@@ -98,7 +109,9 @@ export class AuthService {
         { field: 'name', message: 'Indiquez votre nom (2 caractères minimum).' },
       ]);
     }
-    await this.challenges.update({ id: challenge.id }, { consumedAt: new Date() });
+    // Le code ne peut ouvrir qu'une seule session.
+    const { affected } = await this.challenges.update({ id: challenge.id, consumedAt: IsNull() }, { consumedAt: new Date() });
+    if (!affected) throw OTP_INVALID();
     user ??= await this.users.create(phone, name!);
     return this.issueSession(user.id, randomUUID());
   }
@@ -106,6 +119,13 @@ export class AuthService {
   async refresh(refreshToken: string): Promise<AuthSession> {
     const token = await this.tokens.findOne({ where: { tokenHash: sha256(refreshToken) } });
     if (!token) throw REFRESH_INVALID();
+    if (token.revokedAt && Date.now() - token.revokedAt.getTime() < REFRESH_REUSE_GRACE_MS) {
+      // Renouvellement rejoué juste après (réponse perdue sur un réseau mobile instable) :
+      // on délivre une nouvelle session dans la même famille, sans tout révoquer.
+      const user = await this.users.findActiveById(token.userId);
+      if (!user || token.expiresAt.getTime() <= Date.now()) throw REFRESH_INVALID();
+      return this.issueSession(user.id, token.familyId);
+    }
     if (token.revokedAt) {
       // Jeton déjà remplacé puis réutilisé : vol probable, toute la session est révoquée.
       await this.tokens.update({ familyId: token.familyId, revokedAt: IsNull() }, { revokedAt: new Date() });

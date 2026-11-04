@@ -19,6 +19,8 @@ function flatten(errors: ValidationError[], parent = ''): { field: string; messa
 /** Paramétrage HTTP commun à main.ts et aux tests e2e. */
 export function configureApp(app: INestApplication): INestApplication {
   const cfg = app.get(ConfigService<Env, true>);
+  // Derrière un proxy (Render, Fly, nginx…), l'IP du client vient de X-Forwarded-For.
+  app.getHttpAdapter().getInstance().set('trust proxy', cfg.get('TRUST_PROXY', { infer: true }));
   app.setGlobalPrefix('v1', { exclude: ['health'] });
   app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
   const cors = cfg.get('CORS_ORIGIN', { infer: true });

@@ -51,7 +51,8 @@ export class PhotosService implements OnModuleInit {
       throw unprocessable('TOO_MANY_PHOTOS', `Une annonce peut contenir ${MAX_PHOTOS_PER_LISTING} photos au maximum.`);
     }
     // Toutes les images sont traitées avant d'écrire quoi que ce soit.
-    const processed = await Promise.all(files.map((f) => processImage(f.buffer)));
+    const processed = [];
+    for (const f of files) processed.push(await processImage(f.buffer)); // une à une : mémoire bornée
     const saved: ListingPhoto[] = [];
     for (const [i, img] of processed.entries()) {
       const base = `listings/${listingId}/${randomUUID()}`;

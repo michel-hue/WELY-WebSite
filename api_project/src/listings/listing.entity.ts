@@ -77,7 +77,12 @@ export class Listing {
   @Column({ type: 'int', nullable: true })
   minNights!: number | null;
 
-  @Column({ type: 'int', nullable: true })
+  /** bigint : un prix de vente peut dépasser 2,1 milliards de FCFA. */
+  @Column({
+    type: 'bigint',
+    nullable: true,
+    transformer: { to: (v: number | null) => v, from: (v: string | null) => (v === null ? null : Number(v)) },
+  })
   salePrice!: number | null;
 
   // --- Publication ---

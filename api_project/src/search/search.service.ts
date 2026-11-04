@@ -129,9 +129,9 @@ export class SearchService {
       case 'distance':
         return { expr: `ST_Distance(l.location, ${POINT})`, dir: 'ASC', cast: 'float8' };
       case 'price_asc':
-        return { expr: PRICE_COLUMN[offerType!], dir: 'ASC', cast: 'int' };
+        return { expr: PRICE_COLUMN[offerType!], dir: 'ASC', cast: 'bigint' };
       case 'price_desc':
-        return { expr: PRICE_COLUMN[offerType!], dir: 'DESC', cast: 'int' };
+        return { expr: PRICE_COLUMN[offerType!], dir: 'DESC', cast: 'bigint' };
       default:
         return { expr: `date_trunc('milliseconds', l.published_at)`, dir: 'DESC', cast: 'timestamptz' };
     }

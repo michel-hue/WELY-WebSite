@@ -12,6 +12,12 @@ import { Listing } from './listing.entity.js';
 import { offerTypesOf, toSellerListingDto, type PhotoDto, type SellerListingDto } from './listing.mapper.js';
 import { assertTransition, type ListingAction } from './listing-status.js';
 
+/** Vraie date du calendrier au format AAAA-MM-JJ (refuse le 31 février). */
+export const isRealDate = (s: string) =>
+  /^\d{4}-\d{2}-\d{2}$/.test(s) &&
+  !Number.isNaN(Date.parse(`${s}T00:00:00Z`)) &&
+  new Date(`${s}T00:00:00Z`).toISOString().slice(0, 10) === s;
+
 /** Date du jour (AAAA-MM-JJ) en heure d'Abidjan, qui est UTC. */
 export const todayIso = (now = new Date()) => now.toISOString().slice(0, 10);
 
@@ -89,6 +95,20 @@ export class ListingsService {
     });
   }
 
+  /** Prolonge (ou rend permanente) une annonce en ligne, sans la retirer du marché. */
+  async extend(userId: string, id: string, until?: string): Promise<Listing> {
+    const listing = await this.findOwned(id, userId);
+    if (listing.status !== 'online') {
+      throw unprocessable('INVALID_LISTING_TRANSITION', 'Seule une annonce en ligne peut être prolongée.');
+    }
+    if (until !== undefined && (!isRealDate(until) || until < todayIso())) {
+      throw unprocessable('INVALID_PUBLICATION_DATE', 'La date de fin doit être aujourd’hui ou plus tard.');
+    }
+    listing.publishedUntil = until ?? null;
+    listing.expiryReminderSentAt = null;
+    return this.repo.save(listing);
+  }
+
   deactivate(userId: string, id: string) {
     return this.transition(userId, id, 'deactivate', async () => undefined);
   }
@@ -147,7 +167,7 @@ export class ListingsService {
   }
 
   private async assertPublishable(l: Listing, until?: string) {
-    if (until !== undefined && (Number.isNaN(Date.parse(until)) || until < todayIso())) {
+    if (until !== undefined && (!isRealDate(until) || until < todayIso())) {
       throw unprocessable('INVALID_PUBLICATION_DATE', 'La date de fin doit être aujourd’hui ou plus tard.');
     }
     const missing: { field: string; message: string }[] = [];
