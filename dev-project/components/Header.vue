@@ -1,80 +1,62 @@
 <template>
-    <!-- MINI-BAR EN HAUT -->
-     <div class="Headers">
-    <div class="top-bar">
-      <p>Bienvenue sur Wely, trouvez la résidence idéal rapidement !</p>
-      <div class="top-actions">
-        <a href="/login" >Sign in</a>
-        <a href="/register" class="lien">Sign up</a>
-      </div>
+  <header class="site-header" :class="{ 'is-solid': solid && !menuOpen }">
+    <div class="site-header__inner container">
+      <NuxtLink to="/" class="site-header__brand" aria-label="WELLY, accueil" @click="menuOpen = false">
+        <WellyLogo tone="light" :size="26" />
+      </NuxtLink>
+
+      <nav id="site-nav" class="site-nav" :class="{ 'is-open': menuOpen }" aria-label="Navigation principale">
+        <ul>
+          <li v-for="link in links" :key="link.to">
+            <NuxtLink :to="link.to" :class="{ 'is-current': route.path === link.to }" @click="menuOpen = false">{{ link.label }}</NuxtLink>
+          </li>
+        </ul>
+        <NuxtLink to="/telechargement" class="btn btn--ghost site-nav__cta" @click="menuOpen = false">Télécharger</NuxtLink>
+      </nav>
+
+      <button
+        type="button"
+        class="burger"
+        :class="{ 'is-open': menuOpen }"
+        :aria-expanded="menuOpen"
+        aria-controls="site-nav"
+        @click="menuOpen = !menuOpen"
+      >
+        <span class="visually-hidden">Menu</span>
+        <i></i><i></i>
+      </button>
     </div>
-
-    <!-- HEADER PRINCIPAL -->
-    <header :class="['header', { 'fixed-header': isFixed }]">
-      <div class="logo">
-        <img src="/logo.png" alt="logo" />
-        <h1>Wely</h1>
-      </div>
-
-      <!-- Navigation -->
-<nav>
-  <ul :class="['nav', { 'active': mobileMenu }]">
-    <li>
-      <router-link to="/" exact-active-class="active"><i class="far fa-house"></i> Home</router-link>
-    </li>
-    <li class="dropdown">
-      <router-link to="/about" exact-active-class="active"><i class="far fa-question-circle"></i> About</router-link>
-    </li>
-    <li>
-      <router-link to="/contact" exact-active-class="active"><i class="far fa-address-book"></i> Contact</router-link>
-    </li>
-  </ul>
-</nav>
-
-
-      <!-- Hamburger Mobile -->
-      <div class="hamburger" @click="mobileMenu = !mobileMenu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </header>
-</div>   
-
-    <!-- BANNIÈRE -->
-    <section class="banner">
-      <div class="overlay">
-        <div class="accroche">
-        <h1>Devenez <br> Propriétaire sur Wely</h1>
-<span>Publiez vos biens et commencez à générer des revenus en toute simplicité</span>
-<button class="cta3">Commencer</button>
-
-        </div>
-      </div>
-    </section>
+  </header>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
+<script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-const isFixed = ref(false)
-const mobileMenu = ref(false)
+const links = [
+  { to: '/fonctionnement', label: 'Fonctionnement' },
+  { to: '/#exemples', label: 'Exemples' },
+  { to: '/about', label: 'À propos' },
+  { to: '/contact', label: 'Contact' }
+]
+
+const route = useRoute()
+const solid = ref(false)
+const menuOpen = ref(false)
+
+const onScroll = () => { solid.value = window.scrollY > 24 }
 
 onMounted(() => {
-  const topBarHeight = document.querySelector('.top-bar').offsetHeight
+  onScroll()
+  window.addEventListener('scroll', onScroll, { passive: true })
+})
+onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 
-  window.addEventListener('scroll', () => {
-    isFixed.value = window.scrollY >= topBarHeight
-  })
+// Bloque le défilement de la page quand le menu mobile est ouvert
+watch(menuOpen, (open) => {
+  document.documentElement.style.overflow = open ? 'hidden' : ''
 })
 </script>
-<style lang="scss" scoped>
+
+<style lang="scss">
 @import "../../assets/scss/header";
 </style>
-
-
-
-
-
-
-
