@@ -37,7 +37,7 @@ describe('Notifications', () => {
     const titles: string[] = [];
     let cursor: string | null = null;
     do {
-      const res = await t
+      const res: import('supertest').Response = await t
         .http()
         .get('/v1/me/notifications')
         .query({ limit: 2, ...(cursor ? { cursor } : {}) })

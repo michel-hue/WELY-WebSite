@@ -40,11 +40,18 @@ export class SearchService {
    * ou null s'il n'y a rien à masquer.
    */
   hiddenListingIdsFor(viewer: Viewer): { sql: string; params: Record<string, unknown> } | null {
-    void viewer;
-    return null;
+    const conditions: string[] = [];
+    if (viewer.userId) conditions.push('hr.user_id = :hiddenUser');
+    if (viewer.installationId) conditions.push('hr.installation_id = :hiddenInstallation');
+    if (!conditions.length) return null;
+    return {
+      sql: `SELECT hr.listing_id FROM reports hr WHERE ${conditions.join(' OR ')}`,
+      params: { hiddenUser: viewer.userId, hiddenInstallation: viewer.installationId },
+    };
   }
 
-  private publicBase(viewer: Viewer): SelectQueryBuilder<Listing> {
+  /** Annonces visibles par ce visiteur : en ligne, non supprimées, non signalées par lui. */
+  publicQuery(viewer: Viewer): SelectQueryBuilder<Listing> {
     const qb = this.repo.createQueryBuilder('l').where(`l.status = 'online' AND l.deleted_at IS NULL`);
     const hidden = this.hiddenListingIdsFor(viewer);
     if (hidden) qb.andWhere(`l.id NOT IN (${hidden.sql})`, hidden.params);
@@ -52,7 +59,7 @@ export class SearchService {
   }
 
   async search(q: SearchQuery, viewer: Viewer): Promise<Paginated<ListingCardDto>> {
-    const qb = this.publicBase(viewer);
+    const qb = this.publicQuery(viewer);
     const geo = q.lat !== undefined && q.lng !== undefined;
     const sort: SearchSort = q.sort ?? (geo ? 'distance' : 'recent');
 
@@ -91,16 +98,21 @@ export class SearchService {
 
     const { entities, raw } = await qb.getRawAndEntities();
     const page = entities.slice(0, q.limit);
-    const photos = await this.listings.photosOf(page.map((l) => l.id));
     const distances = new Map(raw.map((r) => [r.l_id as string, r.distance === undefined ? null : Number(r.distance)]));
     const last = page.at(-1);
     return {
-      data: page.map((l) => toCardDto(l, photos.get(l.id)?.[0], distances.get(l.id) ?? null)),
+      data: await this.toCards(page, distances),
       nextCursor:
         entities.length > q.limit && last
           ? encodeCursor({ v: this.sortValue(sort, last, distances.get(last.id) ?? null, q.offerType), id: last.id })
           : null,
     };
+  }
+
+  /** Cartes de liste (photo de couverture, distance éventuelle). */
+  async toCards(listings: Listing[], distances = new Map<string, number | null>()): Promise<ListingCardDto[]> {
+    const photos = await this.listings.photosOf(listings.map((l) => l.id));
+    return listings.map((l) => toCardDto(l, photos.get(l.id)?.[0], distances.get(l.id) ?? null));
   }
 
   /** Les filtres de dates de séjour s'appuient sur les nuits bloquées (module demandes). */
@@ -135,7 +147,7 @@ export class SearchService {
   }
 
   async findPublic(id: string, viewer: Viewer): Promise<PublicListingDto> {
-    const listing = await this.publicBase(viewer).andWhere('l.id = :id', { id }).getOne();
+    const listing = await this.publicQuery(viewer).andWhere('l.id = :id', { id }).getOne();
     if (!listing) throw notFound('LISTING_NOT_FOUND', 'Annonce introuvable.');
     await this.repo.increment({ id }, 'viewCount', 1);
     const seller = await this.users.getActive(listing.ownerId);

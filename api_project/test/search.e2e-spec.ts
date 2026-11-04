@@ -82,7 +82,7 @@ describe('Recherche et fiche publique', () => {
     const seen: string[] = [];
     let cursor: string | null = null;
     do {
-      const res = await search({ limit: 1, ...(cursor ? { cursor } : {}) }).expect(200);
+      const res: import('supertest').Response = await search({ limit: 1, ...(cursor ? { cursor } : {}) }).expect(200);
       seen.push(...titles(res.body));
       cursor = res.body.nextCursor;
     } while (cursor);
@@ -93,7 +93,7 @@ describe('Recherche et fiche publique', () => {
     const seen: string[] = [];
     let cursor: string | null = null;
     do {
-      const res = await search({ ...COCODY, radiusKm: 100, limit: 1, ...(cursor ? { cursor } : {}) }).expect(200);
+      const res: import('supertest').Response = await search({ ...COCODY, radiusKm: 100, limit: 1, ...(cursor ? { cursor } : {}) }).expect(200);
       seen.push(...titles(res.body));
       cursor = res.body.nextCursor;
     } while (cursor);
