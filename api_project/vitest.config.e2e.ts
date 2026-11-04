@@ -17,7 +17,7 @@ function dotenvValue(key: string): string | undefined {
   return line?.slice(key.length + 1).trim().replace(/^['"]|['"]$/g, '');
 }
 
-const fromDotenv = dotenvValue('DATABASE_URL')?.replace('-pooler.', '.');
+const fromDotenv = dotenvValue('DATABASE_URL')?.replace('-pooler.', '.').replace('sslmode=require', 'sslmode=verify-full');
 const testDbUrl = process.env.TEST_DATABASE_URL ?? fromDotenv;
 if (!testDbUrl) throw new Error('Définissez TEST_DATABASE_URL ou DATABASE_URL dans .env pour les tests e2e.');
 

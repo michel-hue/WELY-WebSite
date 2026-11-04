@@ -9,6 +9,7 @@ import { HealthController } from './health/health.controller.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
+import { ListingsModule } from './listings/listings.module.js';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { NotificationsModule } from './notifications/notifications.module.js';
     UsersModule,
     AuthModule,
     NotificationsModule,
+    ListingsModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
