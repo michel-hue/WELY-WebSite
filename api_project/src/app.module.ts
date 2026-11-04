@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { validateEnv } from './config/env.validation.js';
 import { DatabaseModule } from './database/database.module.js';
@@ -14,12 +15,14 @@ import { PhotosModule } from './photos/photos.module.js';
 import { SearchModule } from './search/search.module.js';
 import { FavoritesModule } from './favorites/favorites.module.js';
 import { RequestsModule } from './requests/requests.module.js';
+import { JobsModule } from './jobs/jobs.module.js';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: Number(process.env.THROTTLE_LIMIT ?? 100) }]),
     EventEmitterModule.forRoot(),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     UsersModule,
     AuthModule,
@@ -29,6 +32,7 @@ import { RequestsModule } from './requests/requests.module.js';
     SearchModule,
     FavoritesModule,
     RequestsModule,
+    JobsModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
