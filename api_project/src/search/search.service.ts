@@ -115,10 +115,13 @@ export class SearchService {
     return listings.map((l) => toCardDto(l, photos.get(l.id)?.[0], distances.get(l.id) ?? null));
   }
 
-  /** Les filtres de dates de séjour s'appuient sur les nuits bloquées (module demandes). */
+  /** Exclut les annonces dont des nuits du séjour demandé sont déjà bloquées. */
   protected filterStayDates(qb: SelectQueryBuilder<Listing>, q: SearchQuery): void {
-    void qb;
-    void q;
+    if (!q.checkIn || !q.checkOut) return;
+    qb.andWhere(
+      `NOT EXISTS (SELECT 1 FROM blocked_stays bs WHERE bs.listing_id = l.id AND bs.nights && daterange(:checkIn::date, :checkOut::date, '[)'))`,
+      { checkIn: q.checkIn, checkOut: q.checkOut },
+    );
   }
 
   private sortKey(sort: SearchSort, offerType?: OfferType): { expr: string; dir: 'ASC' | 'DESC'; cast: string } {

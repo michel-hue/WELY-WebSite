@@ -13,6 +13,7 @@ import { ListingsModule } from './listings/listings.module.js';
 import { PhotosModule } from './photos/photos.module.js';
 import { SearchModule } from './search/search.module.js';
 import { FavoritesModule } from './favorites/favorites.module.js';
+import { RequestsModule } from './requests/requests.module.js';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { FavoritesModule } from './favorites/favorites.module.js';
     PhotosModule,
     SearchModule,
     FavoritesModule,
+    RequestsModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
