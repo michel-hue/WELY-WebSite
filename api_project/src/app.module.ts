@@ -16,6 +16,7 @@ import { SearchModule } from './search/search.module.js';
 import { FavoritesModule } from './favorites/favorites.module.js';
 import { RequestsModule } from './requests/requests.module.js';
 import { JobsModule } from './jobs/jobs.module.js';
+import { AccountModule } from './account/account.module.js';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { JobsModule } from './jobs/jobs.module.js';
     FavoritesModule,
     RequestsModule,
     JobsModule,
+    AccountModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
