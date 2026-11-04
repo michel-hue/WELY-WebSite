@@ -1,5 +1,8 @@
 import type { AuthSession } from '../../src/auth/auth.service.js';
+import { join } from 'node:path';
 import { bearer, loginAs, type TestApp } from './test-app.js';
+
+export const HOUSE_PHOTO = join(import.meta.dirname, '..', 'fixtures', 'house.jpg');
 
 /** Corps d'annonce complet et publiable (hors photos). */
 export const listingBody = (overrides: Record<string, unknown> = {}) => ({
@@ -24,8 +27,24 @@ export async function sellerSession(t: TestApp, phone: string, name = 'Vendeur T
   return s;
 }
 
-/** Crée un brouillon et renvoie son id. */
-export async function createDraft(t: TestApp, s: AuthSession, overrides: Record<string, unknown> = {}): Promise<string> {
+/** Crée un brouillon (avec une photo par défaut, pour pouvoir le publier) et renvoie son id. */
+export async function createDraft(
+  t: TestApp,
+  s: AuthSession,
+  overrides: Record<string, unknown> = {},
+  opts: { photo?: boolean } = {},
+): Promise<string> {
   const res = await t.http().post('/v1/listings').set(bearer(s)).send(listingBody(overrides)).expect(201);
-  return res.body.id as string;
+  const id = res.body.id as string;
+  if (opts.photo !== false) {
+    await t.http().post(`/v1/listings/${id}/photos`).set(bearer(s)).attach('photos', HOUSE_PHOTO).expect(201);
+  }
+  return id;
+}
+
+/** Crée une annonce en ligne (permanente) et renvoie son id. */
+export async function createOnline(t: TestApp, s: AuthSession, overrides: Record<string, unknown> = {}): Promise<string> {
+  const id = await createDraft(t, s, overrides);
+  await t.http().post(`/v1/listings/${id}/publish`).set(bearer(s)).send({}).expect(200);
+  return id;
 }

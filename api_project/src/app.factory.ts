@@ -2,6 +2,8 @@ import { BadRequestException, type INestApplication, ValidationPipe, type Valida
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import express from 'express';
+import { resolve } from 'node:path';
 import { AllExceptionsFilter } from './common/errors/all-exceptions.filter.js';
 import { badRequest } from './common/errors/app-error.js';
 import type { Env } from './config/env.validation.js';
@@ -31,6 +33,11 @@ export function configureApp(app: INestApplication): INestApplication {
     }),
   );
   app.useGlobalFilters(new AllExceptionsFilter());
+
+  // Stockage local : les photos sont servies par l'API elle-même.
+  if (cfg.get('STORAGE_DRIVER', { infer: true }) === 'local') {
+    app.use('/media', express.static(resolve(cfg.get('MEDIA_DIR', { infer: true })), { maxAge: '7d', immutable: true }));
+  }
 
   if (cfg.get('NODE_ENV', { infer: true }) !== 'production') {
     const doc = SwaggerModule.createDocument(

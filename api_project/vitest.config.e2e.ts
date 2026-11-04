@@ -2,6 +2,10 @@ import { defineConfig } from 'vitest/config';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import swc from 'unplugin-swc';
 import { existsSync, readFileSync } from 'node:fs';
+import dns from 'node:dns';
+
+// Neon publie des adresses IPv6 parfois injoignables depuis le poste : IPv4 d'abord.
+dns.setDefaultResultOrder('ipv4first');
 
 /**
  * Base des tests e2e :
@@ -32,6 +36,7 @@ const testEnv = {
   // Les tests enchaînent beaucoup de connexions depuis la même IP.
   THROTTLE_LIMIT: '100000',
   OTP_IP_LIMIT_PER_MIN: '100000',
+  NODE_OPTIONS: [process.env.NODE_OPTIONS, '--dns-result-order=ipv4first'].filter(Boolean).join(' '),
 };
 // Le globalSetup tourne dans ce processus : il lit process.env.
 Object.assign(process.env, testEnv);

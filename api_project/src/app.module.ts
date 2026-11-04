@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
 import { ListingsModule } from './listings/listings.module.js';
+import { PhotosModule } from './photos/photos.module.js';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ListingsModule } from './listings/listings.module.js';
     AuthModule,
     NotificationsModule,
     ListingsModule,
+    PhotosModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
