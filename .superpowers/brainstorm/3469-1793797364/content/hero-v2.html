@@ -1,0 +1,139 @@
+<style>
+  #pv{--bg:#F6EFE6;--surf:#EADFCF;--dark:#1E1611;--deep:#30221A;--text:#2A1E17;--mute:#7A6A5E;--acc:#B9895B;--light:#F8EFE3}
+  .pal{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 22px}
+  .pal button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;border-radius:999px;border:1px solid rgba(127,127,127,.35);font-size:13px}
+  .pal button:hover{border-color:currentColor}
+  .sw{display:flex}
+  .sw i{width:18px;height:18px;border-radius:50%;margin-left:-5px;border:2px solid rgba(255,255,255,.7)}
+  .sw i:first-child{margin-left:0}
+  .hx{font-family:'Helvetica Neue',Arial,sans-serif;border-radius:12px;overflow:hidden;position:relative;height:460px;transition:background .4s,color .4s}
+  .hx *{box-sizing:border-box}
+  .hx-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 26px;font-size:11px;position:relative;z-index:3}
+  .hx-brand{display:flex;align-items:center;gap:8px;font-weight:300;letter-spacing:.3em;font-size:13px}
+  .hx-links{display:flex;gap:20px;opacity:.75}
+  .hx-cta{border:1px solid currentColor;border-radius:999px;padding:6px 13px;font-size:10px}
+  .hx h1{font-weight:300;letter-spacing:-.025em;line-height:1.08;margin:0}
+  .hx em{font-family:Georgia,'Times New Roman',serif;font-weight:400}
+  .hx p{line-height:1.65;margin:0}
+  .eyebrow{font-size:9px;letter-spacing:.25em;text-transform:uppercase}
+  .phone{width:118px;height:236px;border-radius:22px;border:5px solid var(--dark);background:#fff;overflow:hidden;box-shadow:0 30px 60px -18px rgba(0,0,0,.45)}
+  .phone img{width:100%;height:56%;object-fit:cover;display:block}
+  .phone .pc{padding:8px;font-size:8px;color:var(--text)}
+  .phone .pc b{display:block;font-size:9px;margin-bottom:3px}
+  .phone .pbtn{margin-top:8px;background:var(--deep);color:var(--light);border-radius:6px;text-align:center;padding:5px}
+  .store{border-radius:8px;padding:7px 11px;font-size:9px;display:inline-block}
+  .chip{position:absolute;background:rgba(255,255,255,.92);color:var(--text);font-size:9px;padding:7px 10px;border-radius:10px;box-shadow:0 10px 30px -10px rgba(0,0,0,.3);display:flex;gap:6px;align-items:center;z-index:4}
+  .chip b{color:var(--acc)}
+  .tag{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.45);color:#fff;font-size:7px;letter-spacing:.15em;text-transform:uppercase;padding:3px 6px;border-radius:4px}
+  .floaty{animation:fl 6s ease-in-out infinite}
+  @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .logo-c{width:20px;height:20px}
+</style>
+
+<h2>Accueil, 2ᵉ série : nouvelles mises en page, nouvelles photos, palettes à essayer</h2>
+<p class="subtitle">Clique sur une palette : les trois maquettes changent de couleurs en direct. Toutes gardent un fond sombre ou chaud. Les photos sont des exemples libres de droits (Unsplash), on pourra les remplacer.</p>
+
+<div class="pal">
+  <button data-choice="pal-espresso" onclick="document.getElementById('pv').style.cssText='--bg:#F6EFE6;--surf:#EADFCF;--dark:#1E1611;--deep:#30221A;--text:#2A1E17;--mute:#7A6A5E;--acc:#B9895B;--light:#F8EFE3'">
+    <span class="sw"><i style="background:#1E1611"></i><i style="background:#30221A"></i><i style="background:#B9895B"></i><i style="background:#F6EFE6"></i></span>Espresso &amp; lin (actuelle, affinée)</button>
+  <button data-choice="pal-olive" onclick="document.getElementById('pv').style.cssText='--bg:#F1EEE6;--surf:#E1DDD0;--dark:#1A1F1A;--deep:#2E372F;--text:#1F2620;--mute:#6B7268;--acc:#A68A56;--light:#F1EEE6'">
+    <span class="sw"><i style="background:#1A1F1A"></i><i style="background:#2E372F"></i><i style="background:#A68A56"></i><i style="background:#F1EEE6"></i></span>Olive &amp; pierre</button>
+  <button data-choice="pal-nuit" onclick="document.getElementById('pv').style.cssText='--bg:#EFEBE4;--surf:#DDD6CA;--dark:#13161B;--deep:#252A33;--text:#1A1D23;--mute:#6A6F78;--acc:#C2A25F;--light:#EFEBE4'">
+    <span class="sw"><i style="background:#13161B"></i><i style="background:#252A33"></i><i style="background:#C2A25F"></i><i style="background:#EFEBE4"></i></span>Nuit &amp; laiton</button>
+  <button data-choice="pal-cacao" onclick="document.getElementById('pv').style.cssText='--bg:#F7EEE5;--surf:#EDDCCB;--dark:#23150F;--deep:#3A2219;--text:#2B1A12;--mute:#85695A;--acc:#C0673E;--light:#F7EEE5'">
+    <span class="sw"><i style="background:#23150F"></i><i style="background:#3A2219"></i><i style="background:#C0673E"></i><i style="background:#F7EEE5"></i></span>Cacao &amp; terre cuite</button>
+</div>
+
+<div id="pv">
+<div class="cards">
+
+<!-- D : Arche maison -->
+<div class="card" data-choice="d" onclick="toggleSelect(this)">
+  <div class="card-image">
+    <div class="hx" style="background:var(--bg);color:var(--text)">
+      <div class="hx-nav">
+        <div class="hx-brand"><svg class="logo-c" viewBox="0 0 48 48"><path d="M24 3 L45 20 V41 a4 4 0 0 1 -4 4 H7 a4 4 0 0 1 -4 -4 V20 Z" fill="var(--deep)"/><path d="M12 22 L17 37 L24 28 L31 37 L36 22" fill="none" stroke="var(--light)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>WELLY</div>
+        <div class="hx-links"><span>Fonctionnement</span><span>Exemples</span><span>Contact</span></div>
+        <div class="hx-cta">Télécharger</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:24px;padding:24px 30px 0;align-items:center">
+        <div>
+          <div class="eyebrow" style="color:var(--acc);margin-bottom:14px">— Maisons &amp; appartements</div>
+          <h1 style="font-size:32px">Le lieu qui vous attend<br><em>est déjà là.</em></h1>
+          <p style="font-size:11px;color:var(--mute);margin:14px 0 18px;max-width:280px">Cherchez, réservez, ou publiez votre bien. Une seule app, un seul compte.</p>
+          <span class="store" style="background:var(--dark);color:var(--light)">App Store</span>
+          <span class="store" style="background:var(--dark);color:var(--light)">Google Play</span>
+        </div>
+        <div style="position:relative;height:340px">
+          <div style="position:absolute;inset:0 10px 0 10px;clip-path:polygon(50% 0,100% 30%,100% 100%,0 100%,0 30%);background:url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700') center/cover"></div>
+          <div class="chip" style="left:-14px;bottom:60px"><b>●</b> Réservé en 2 min</div>
+          <div class="chip" style="right:-6px;top:120px">⌂ 128 biens dispo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <h3>D · L'arche maison</h3>
+    <p>La photo est découpée en forme de maison, comme le logo C. Deux petites étiquettes flottent dessus. Ensemble clair, chaleureux et identitaire.</p>
+  </div>
+</div>
+
+<!-- E : Plein cadre doux -->
+<div class="card" data-choice="e" onclick="toggleSelect(this)">
+  <div class="card-image">
+    <div class="hx" style="background:var(--dark);color:var(--light);padding:10px">
+      <div style="position:absolute;inset:10px;border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.55) 100%),url('https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1000') center/cover"></div>
+      <div class="hx-nav" style="color:#fff">
+        <div class="hx-brand"><svg class="logo-c" viewBox="0 0 48 48"><path d="M24 3 L45 20 V41 a4 4 0 0 1 -4 4 H7 a4 4 0 0 1 -4 -4 V20 Z" fill="#fff"/><path d="M12 22 L17 37 L24 28 L31 37 L36 22" fill="none" stroke="var(--deep)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>WELLY</div>
+        <div class="hx-links"><span>Fonctionnement</span><span>Exemples</span><span>Contact</span></div>
+        <div class="hx-cta">Télécharger</div>
+      </div>
+      <div style="position:absolute;left:36px;right:36px;bottom:36px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;z-index:2;color:#fff">
+        <div>
+          <h1 style="font-size:34px">Se sentir chez soi,<br><em>avant même d'arriver.</em></h1>
+          <p style="font-size:11px;opacity:.85;margin-top:12px;max-width:300px">WELLY réunit ceux qui cherchent et ceux qui proposent, dans une seule app.</p>
+        </div>
+        <div style="background:rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:12px;width:190px;font-size:10px">
+          <div style="display:flex;background:rgba(0,0,0,.25);border-radius:999px;padding:3px;margin-bottom:10px"><span style="flex:1;text-align:center;padding:5px;border-radius:999px;background:var(--light);color:var(--text)">Je cherche</span><span style="flex:1;text-align:center;padding:5px">Je propose</span></div>
+          <div style="opacity:.85;line-height:1.5">Parcourez les annonces, filtrez, réservez en quelques gestes.</div>
+          <div style="margin-top:10px;background:var(--acc);color:#fff;text-align:center;border-radius:8px;padding:7px">Télécharger l'app</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <h3>E · Plein cadre doux</h3>
+    <p>Une grande photo d'intérieur en bord arrondi, assombrie doucement en bas. Une carte en verre dépoli porte la bascule « Je cherche / Je propose ». Effet immersif et premium.</p>
+  </div>
+</div>
+
+<!-- F : Typo + bande photo -->
+<div class="card" data-choice="f" onclick="toggleSelect(this)">
+  <div class="card-image">
+    <div class="hx" style="background:var(--bg);color:var(--text)">
+      <div class="hx-nav">
+        <div class="hx-brand"><svg class="logo-c" viewBox="0 0 48 48"><path d="M24 3 L45 20 V41 a4 4 0 0 1 -4 4 H7 a4 4 0 0 1 -4 -4 V20 Z" fill="var(--deep)"/><path d="M12 22 L17 37 L24 28 L31 37 L36 22" fill="none" stroke="var(--light)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>WELLY</div>
+        <div class="hx-links"><span>Fonctionnement</span><span>Exemples</span><span>Contact</span></div>
+        <div class="hx-cta">Télécharger</div>
+      </div>
+      <div style="text-align:center;padding:14px 30px 0">
+        <h1 style="font-size:36px">Chercher. Réserver. <em style="color:var(--acc)">Proposer.</em></h1>
+        <p style="font-size:11px;color:var(--mute);margin:10px auto 0;max-width:340px">Tout l'immobilier du quotidien dans une seule application.</p>
+      </div>
+      <div style="position:absolute;left:24px;right:24px;bottom:0;height:240px;display:grid;grid-template-columns:1fr 1fr 1.1fr 1fr 1fr;gap:10px;align-items:end">
+        <div style="height:150px;border-radius:12px 12px 0 0;background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400') center/cover;position:relative"><span class="tag">Exemple</span></div>
+        <div style="height:200px;border-radius:12px 12px 0 0;background:url('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400') center/cover"></div>
+        <div style="height:240px;display:flex;justify-content:center;align-items:flex-start"><div class="phone floaty"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=300"><div class="pc"><b>Villa lumineuse</b>4 pièces · jardin<div class="pbtn">Réserver</div></div></div></div>
+        <div style="height:200px;border-radius:12px 12px 0 0;background:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=400') center/cover"></div>
+        <div style="height:150px;border-radius:12px 12px 0 0;background:url('https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400') center/cover"></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <h3>F · Titre fort + bande de photos</h3>
+    <p>Une phrase en trois verbes, puis une rangée de photos en escalier avec l'app au centre. On montre les exemples de biens dès le premier écran.</p>
+  </div>
+</div>
+
+</div>
+</div>

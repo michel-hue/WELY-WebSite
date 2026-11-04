@@ -1,0 +1,40 @@
+@import "tokens";
+
+.how {
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 64px;
+  }
+
+  &__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+
+  &__step {
+    border-top: 1px solid $line;
+    padding-top: 26px;
+
+    h3 { font-size: 21px; font-weight: 400; letter-spacing: -.01em; margin-bottom: 8px; }
+    p { color: $ink-mute; font-size: 15px; max-width: 32ch; }
+  }
+
+  &__num { display: block; font-size: 34px; line-height: 1; color: $brass-ink; }
+
+  &__icon { display: block; margin: 26px 0 18px; color: $slate; }
+
+  &__link { margin-top: 56px; }
+
+  @include md {
+    &__steps { grid-template-columns: 1fr; gap: 28px; }
+    &__head { margin-bottom: 44px; }
+  }
+}

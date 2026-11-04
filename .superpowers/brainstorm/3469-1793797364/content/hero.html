@@ -1,0 +1,115 @@
+<style>
+  .hx{--esp:#30221A;--ink:#1E1611;--cream:#F8EFE3;--sand:#D5CCC0;--mute:#7A6A5E;font-family:'Helvetica Neue',Arial,sans-serif;border-radius:12px;overflow:hidden;position:relative}
+  .hx *{box-sizing:border-box}
+  .hx-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;font-size:11px;letter-spacing:.04em}
+  .hx-brand{display:flex;align-items:center;gap:8px;font-weight:300;letter-spacing:.3em;font-size:13px}
+  .hx-links{display:flex;gap:18px;opacity:.75}
+  .hx-cta{border:1px solid currentColor;border-radius:999px;padding:6px 12px;font-size:10px}
+  .hx h1{font-weight:300;letter-spacing:-.02em;line-height:1.1;margin:0}
+  .hx p{line-height:1.6;margin:0}
+  .phone{width:120px;height:240px;border-radius:22px;border:5px solid var(--ink);background:#fff;overflow:hidden;box-shadow:0 30px 60px -20px rgba(48,34,26,.45);position:relative}
+  .phone img{width:100%;height:58%;object-fit:cover;display:block}
+  .phone .pc{padding:8px;font-size:8px;color:var(--esp)}
+  .phone .pc b{display:block;font-size:9px;margin-bottom:3px}
+  .phone .pbtn{margin-top:8px;background:var(--esp);color:var(--cream);border-radius:6px;text-align:center;padding:5px;font-size:8px}
+  .tog{display:inline-flex;border:1px solid var(--sand);border-radius:999px;padding:3px;font-size:10px}
+  .tog span{padding:5px 12px;border-radius:999px}
+  .tog .on{background:var(--esp);color:var(--cream)}
+  .stores{display:flex;gap:8px}
+  .store{background:var(--ink);color:var(--cream);border-radius:8px;padding:6px 10px;font-size:9px}
+  .floaty{animation:fl 6s ease-in-out infinite}
+  @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+</style>
+
+<h2>Accueil : quelle ouverture te correspond ?</h2>
+<p class="subtitle">Le haut de la page d'accueil, avec le logo C. Les trois restent doux et dans ta palette. Ce qui change, c'est ce qu'on met en avant en premier.</p>
+
+<div class="cards">
+
+<!-- A : centré calme -->
+<div class="card" data-choice="a" onclick="toggleSelect(this)">
+  <div class="card-image">
+    <div class="hx" style="background:linear-gradient(180deg,#FBF6EE 0%,#F3E8D9 100%);color:var(--esp);height:430px">
+      <div class="hx-nav">
+        <div class="hx-brand"><svg width="20" height="20" viewBox="0 0 48 48"><path d="M24 3 L45 20 V41 a4 4 0 0 1 -4 4 H7 a4 4 0 0 1 -4 -4 V20 Z" fill="#30221A"/><path d="M12 22 L17 37 L24 28 L31 37 L36 22" fill="none" stroke="#F8EFE3" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>WELLY</div>
+        <div class="hx-links"><span>Fonctionnement</span><span>Exemples</span><span>Contact</span></div>
+        <div class="hx-cta">Télécharger</div>
+      </div>
+      <div style="text-align:center;padding:22px 30px 0">
+        <div style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--mute);margin-bottom:12px">Maisons &amp; appartements</div>
+        <h1 style="font-size:30px">Trouver un lieu où vivre,<br><em style="font-family:Georgia,serif;font-weight:400">tout simplement.</em></h1>
+        <p style="font-size:11px;color:var(--mute);max-width:320px;margin:12px auto 16px">Une seule application pour chercher, réserver ou proposer un bien.</p>
+        <div class="stores" style="justify-content:center"><span class="store">App Store</span><span class="store">Google Play</span></div>
+      </div>
+      <div class="floaty" style="position:absolute;left:50%;bottom:-120px;transform:translateX(-50%)">
+        <div class="phone"><img src="/files/image1.jpg"><div class="pc"><b>Villa Cocody</b>4 pièces · 350 000 F/mois</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <h3>A · Centré et calme</h3>
+    <p>Titre fin au centre, un téléphone qui flotte doucement et sort un peu du cadre. C'est l'ouverture la plus douce, centrée sur l'app.</p>
+  </div>
+</div>
+
+<!-- B : split + toggle -->
+<div class="card" data-choice="b" onclick="toggleSelect(this)">
+  <div class="card-image">
+    <div class="hx" style="background:#F8EFE3;color:var(--esp);height:430px">
+      <div class="hx-nav">
+        <div class="hx-brand"><svg width="20" height="20" viewBox="0 0 48 48"><path d="M24 3 L45 20 V41 a4 4 0 0 1 -4 4 H7 a4 4 0 0 1 -4 -4 V20 Z" fill="#30221A"/><path d="M12 22 L17 37 L24 28 L31 37 L36 22" fill="none" stroke="#F8EFE3" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>WELLY</div>
+        <div class="hx-links"><span>Fonctionnement</span><span>Exemples</span><span>Contact</span></div>
+        <div class="hx-cta">Télécharger</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:20px;padding:30px 30px 0">
+        <div style="flex:1.2">
+          <div class="tog" style="margin-bottom:16px"><span class="on">Je cherche</span><span>Je propose</span></div>
+          <h1 style="font-size:28px">Votre prochain chez-vous est à portée de main.</h1>
+          <p style="font-size:11px;color:var(--mute);margin:12px 0 16px">Consultez, comparez et réservez des maisons et appartements. Et quand vous voulez, publiez les vôtres depuis le même compte.</p>
+          <div class="stores"><span class="store">App Store</span><span class="store">Google Play</span></div>
+        </div>
+        <div style="flex:1;display:flex;justify-content:center;position:relative">
+          <div style="position:absolute;width:170px;height:170px;border-radius:50%;background:#EADBC7;top:30px"></div>
+          <div class="phone floaty"><img src="/files/image3.jpg"><div class="pc"><b>Rechercher</b>Abidjan · 2–4 pièces<div class="pbtn">Voir 128 biens</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <h3>B · Deux colonnes + bascule acheteur/vendeur</h3>
+    <p>Texte à gauche, téléphone à droite. Le sélecteur « Je cherche / Je propose » change le texte et l'écran affiché. On comprend tout de suite l'idée du compte unique.</p>
+  </div>
+</div>
+
+<!-- C : éditorial photo -->
+<div class="card" data-choice="c" onclick="toggleSelect(this)">
+  <div class="card-image">
+    <div class="hx" style="background:#1E1611;color:var(--cream);height:430px">
+      <div class="hx-nav">
+        <div class="hx-brand"><svg width="20" height="20" viewBox="0 0 48 48"><path d="M24 3 L45 20 V41 a4 4 0 0 1 -4 4 H7 a4 4 0 0 1 -4 -4 V20 Z" fill="#F8EFE3"/><path d="M12 22 L17 37 L24 28 L31 37 L36 22" fill="none" stroke="#30221A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>WELLY</div>
+        <div class="hx-links"><span>Fonctionnement</span><span>Exemples</span><span>Contact</span></div>
+        <div class="hx-cta">Télécharger</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:26px 30px 0;align-items:end">
+        <div>
+          <h1 style="font-size:30px">Des lieux<br>qui vous <em style="font-family:Georgia,serif;font-weight:400;color:#D5CCC0">ressemblent.</em></h1>
+          <p style="font-size:11px;color:#BFAF9E;margin:14px 0 16px">Maisons et appartements, à réserver ou à proposer depuis une seule app.</p>
+          <div class="stores"><span class="store" style="background:#F8EFE3;color:#1E1611">App Store</span><span class="store" style="background:#F8EFE3;color:#1E1611">Google Play</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;height:260px">
+          <img src="/files/image1.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:10px;filter:sepia(.25) saturate(.85)">
+          <div style="display:grid;gap:8px">
+            <img src="/files/image3.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:10px;filter:sepia(.25) saturate(.85)">
+            <img src="/files/image5.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:10px;filter:sepia(.25) saturate(.85)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <h3>C · Éditorial sombre, photos en avant</h3>
+    <p>Fond brun très sombre, titre fin, mosaïque de photos retouchées dans une teinte chaude commune. Plus « magazine immobilier », l'app vient juste après.</p>
+  </div>
+</div>
+
+</div>

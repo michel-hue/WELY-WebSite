@@ -1,0 +1,49 @@
+@import "tokens";
+
+.role-toggle {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  border-radius: 999px;
+
+  button {
+    position: relative;
+    z-index: 1;
+    border: 0;
+    background: transparent;
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .35s $ease;
+  }
+
+  &__thumb {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    border-radius: 999px;
+    transition: transform .45s $ease;
+    &.is-right { transform: translateX(100%); }
+  }
+
+  // Sur photo : verre sombre
+  &--glass {
+    display: grid;
+    background: rgba(0, 0, 0, .28);
+    button { color: rgba(255, 255, 255, .8); &.is-active { color: $ink; } }
+    .role-toggle__thumb { background: $linen; }
+  }
+
+  // Sur fond clair
+  &--light {
+    border: 1px solid $line;
+    button { color: $ink-mute; &.is-active { color: $on-dark; } }
+    .role-toggle__thumb { background: $slate; }
+  }
+}

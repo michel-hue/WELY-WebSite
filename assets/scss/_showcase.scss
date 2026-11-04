@@ -1,0 +1,70 @@
+@import "tokens";
+
+.showcase {
+  overflow: hidden;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    align-items: center;
+    gap: 56px;
+  }
+
+  &__accent { color: $brass; }
+
+  .lead { margin-top: 22px; }
+
+  &__list {
+    list-style: none;
+    margin: 40px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 22px;
+
+    li { display: flex; gap: 16px; align-items: flex-start; }
+    svg { color: $brass; flex-shrink: 0; margin-top: 2px; }
+    strong { display: block; font-weight: 500; color: $on-dark; font-size: 15.5px; }
+    span { color: $on-dark-mute; font-size: 14.5px; }
+  }
+
+  &__phones {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    min-height: 560px;
+  }
+
+  &__phone {
+    position: relative;
+    z-index: 1;
+    &--main { --w: 250px; z-index: 2; }
+    &--side {
+      --w: 210px;
+      filter: brightness(.5) saturate(.6);
+      &:first-child { margin-right: -46px; transform: rotate(-4deg); }
+      &:nth-child(3) { margin-left: -46px; transform: rotate(4deg); }
+    }
+  }
+
+  &__glow {
+    position: absolute;
+    width: 460px;
+    height: 460px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba($brass, .22) 0%, rgba($brass, 0) 65%);
+    z-index: 0;
+  }
+
+  @include md {
+    &__grid { grid-template-columns: 1fr; }
+    &__phones { min-height: 0; padding: 20px 0; }
+    &__phone--main { --w: 220px; }
+    &__phone--side { --w: 170px; }
+  }
+
+  @include sm {
+    &__phone--side { display: none; }
+  }
+}

@@ -1,0 +1,49 @@
+// =========================================================
+// WELLY — Design tokens (palette « Nuit & laiton »)
+// Importé par chaque partial : @import "tokens";
+// Ne contient que des variables et mixins (aucune règle CSS),
+// on peut donc l'importer plusieurs fois sans dupliquer de styles.
+// =========================================================
+
+// --- Couleurs -------------------------------------------------
+$night:        #13161B;   // fond le plus sombre
+$night-2:      #1B1F26;   // surface sombre surélevée
+$slate:        #252A33;   // anthracite (boutons, logo)
+$linen:        #EFEBE4;   // fond clair principal
+$sand:         #DDD6CA;   // fond clair secondaire
+$paper:        #F7F4EF;   // cartes sur fond clair
+$ink:          #1A1D23;   // texte principal sur clair
+$ink-mute:     #5E636C;   // texte secondaire sur clair (AA sur $linen)
+$line:         #CFC7B9;   // filets sur clair
+$brass:        #C2A25F;   // accent (sur fond sombre, décor)
+$brass-ink:    #7A5E26;   // accent lisible sur fond clair (AA)
+$on-dark:      #EFEBE4;   // texte sur sombre
+$on-dark-mute: #A3A8B1;   // texte secondaire sur sombre
+$line-dark:    rgba(239, 235, 228, 0.12);
+
+// --- Typographie ---------------------------------------------
+$font-sans:  "Inter", "Helvetica Neue", Arial, sans-serif;
+$font-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+
+// --- Mise en page --------------------------------------------
+$container: 1200px;
+$gutter:    clamp(20px, 5vw, 48px);
+$radius:    14px;
+$radius-lg: 22px;
+$ease:      cubic-bezier(.22, .61, .36, 1);
+
+// --- Breakpoints ---------------------------------------------
+$bp-md: 900px;
+$bp-sm: 640px;
+
+@mixin md { @media (max-width: $bp-md) { @content; } }
+@mixin sm { @media (max-width: $bp-sm) { @content; } }
+
+// Titre fin, utilisé partout
+@mixin display($size) {
+  font-family: $font-sans;
+  font-weight: 300;
+  font-size: $size;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}

@@ -1,0 +1,133 @@
+// =========================================================
+// WELLY — styles globaux (importé une seule fois, dans app.vue)
+// =========================================================
+@import "tokens";
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: $linen;
+  color: $ink;
+  font-family: $font-sans;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+h1, h2, h3, h4, p { margin: 0; }
+
+::selection { background: $brass; color: $night; }
+
+:focus-visible {
+  outline: 2px solid $brass;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+// Mot mis en valeur dans les titres : italique à empattements
+.serif {
+  font-family: $font-serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.container {
+  width: 100%;
+  max-width: $container;
+  margin: 0 auto;
+  padding: 0 $gutter;
+}
+
+.section {
+  padding: clamp(72px, 10vw, 128px) 0;
+  &--dark { background: $night; color: $on-dark; }
+  &--sand { background: $sand; }
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: $brass-ink;
+  margin-bottom: 18px;
+
+  &::before { content: ""; width: 22px; height: 1px; background: currentColor; }
+  .section--dark & { color: $brass; }
+}
+
+.title { @include display(clamp(32px, 4.4vw, 52px)); }
+
+.lead {
+  font-size: 17px;
+  color: $ink-mute;
+  max-width: 52ch;
+  .section--dark & { color: $on-dark-mute; }
+}
+
+// --- Boutons -------------------------------------------------
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 22px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .25s $ease, color .25s $ease, border-color .25s $ease, transform .25s $ease;
+
+  &:hover { transform: translateY(-1px); }
+
+  &--brass { background: $brass; color: $night; &:hover { background: lighten($brass, 6%); } }
+  &--dark  { background: $slate; color: $on-dark; &:hover { background: $night; } }
+  &--ghost { border-color: currentColor; background: transparent; &:hover { background: rgba(255,255,255,.08); } }
+}
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  transition: gap .25s $ease;
+  &:hover { gap: 12px; }
+}
+
+// --- Apparition au défilement (voir plugins/reveal.ts) --------
+// La classe .js est posée sur <html> au chargement : sans JS, rien n'est caché.
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .9s $ease, transform .9s $ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js [data-reveal].is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

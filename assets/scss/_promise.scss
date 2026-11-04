@@ -1,0 +1,37 @@
+@import "tokens";
+
+.promise {
+  background: $linen;
+  border-bottom: 1px solid $line;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 40px 28px;
+    border-left: 1px solid $line;
+    &:first-child { border-left: 0; padding-left: 0; }
+  }
+
+  &__big {
+    font-size: 44px;
+    line-height: 1;
+    color: $ink;
+  }
+
+  &__small { font-size: 14px; color: $ink-mute; max-width: 18ch; }
+
+  @include md {
+    &__grid { grid-template-columns: 1fr 1fr; }
+    &__item {
+      padding: 28px 20px;
+      &:nth-child(odd) { border-left: 0; padding-left: 0; }
+      &:nth-child(n + 3) { border-top: 1px solid $line; }
+    }
+  }
+}

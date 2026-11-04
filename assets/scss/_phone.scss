@@ -1,0 +1,129 @@
+@import "tokens";
+
+// Maquette de téléphone dessinée en CSS (aucune image d'appareil)
+.phone {
+  --w: 248px;
+  width: var(--w);
+  aspect-ratio: 9 / 19;
+  border-radius: calc(var(--w) * .17);
+  padding: calc(var(--w) * .035);
+  background: linear-gradient(145deg, #2C313B, #0E1014);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, .06) inset,
+    0 40px 80px -30px rgba(0, 0, 0, .6),
+    0 18px 36px -18px rgba(0, 0, 0, .45);
+  flex-shrink: 0;
+
+  &--float { animation: phone-float 7s ease-in-out infinite; }
+
+  &__screen {
+    position: relative;
+    height: 100%;
+    border-radius: calc(var(--w) * .135);
+    background: $paper;
+    color: $ink;
+    overflow: hidden;
+    font-size: 10px;
+    line-height: 1.35;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 16px 4px;
+    font-size: 9px;
+    font-weight: 500;
+    span:last-child { letter-spacing: -1px; font-size: 6px; }
+  }
+  &__notch { width: 54px; height: 15px; border-radius: 10px; background: #0E1014; }
+
+  &__tabbar {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-around;
+    padding: 9px 10px 14px;
+    border-top: 1px solid rgba(0, 0, 0, .06);
+    background: #fff;
+    color: $ink-mute;
+    svg:first-child { color: $brass-ink; }
+  }
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+@keyframes phone-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@media (prefers-reduced-motion: reduce) { .phone--float { animation: none; } }
+
+// --- écran recherche ---
+.ps {
+  padding: 6px 14px 0;
+  &__hello { color: $ink-mute; font-size: 9px; }
+  &__title { font-size: 15px; font-weight: 300; letter-spacing: -.02em; margin: 2px 0 10px; line-height: 1.15; }
+  &__search {
+    display: flex; align-items: center; gap: 6px;
+    background: #fff; border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 10px; padding: 7px 9px; color: $ink-mute;
+  }
+  &__chips {
+    display: flex; gap: 5px; margin: 9px 0 10px;
+    span { padding: 3px 9px; border-radius: 99px; border: 1px solid $line; font-size: 8.5px; }
+    .on { background: $slate; color: $on-dark; border-color: $slate; }
+  }
+  &__card {
+    display: flex; gap: 8px; align-items: center;
+    background: #fff; border-radius: 10px; padding: 5px; margin-bottom: 7px;
+    box-shadow: 0 4px 12px -8px rgba(0, 0, 0, .3);
+    img { width: 46px; height: 46px; border-radius: 7px; flex-shrink: 0; }
+    b { display: block; font-weight: 500; font-size: 9.5px; }
+    small { display: block; color: $ink-mute; font-size: 8.5px; }
+    em { font-style: normal; color: $brass-ink; font-weight: 500; font-size: 9px; }
+  }
+}
+
+// --- écran fiche ---
+.pd {
+  display: flex; flex-direction: column; flex: 1; margin-top: -26px;
+  &__img { position: relative; height: 46%; }
+  &__fav {
+    position: absolute; top: 30px; right: 10px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(255, 255, 255, .9); display: grid; place-items: center;
+  }
+  &__body {
+    flex: 1; margin-top: -14px; position: relative;
+    background: $paper; border-radius: 16px 16px 0 0; padding: 12px 14px 0;
+  }
+  &__title { font-size: 14px; font-weight: 400; letter-spacing: -.01em; }
+  &__place { display: flex; align-items: center; gap: 3px; color: $ink-mute; font-size: 9px; margin: 2px 0 8px; }
+  &__specs { display: flex; gap: 4px; flex-wrap: wrap; span { background: $sand; padding: 2px 7px; border-radius: 6px; font-size: 8px; } }
+  &__desc { color: $ink-mute; font-size: 8.5px; margin: 8px 0 10px; }
+  &__foot { display: flex; justify-content: space-between; align-items: center; font-size: 8.5px; b { font-size: 11px; font-weight: 500; } }
+  &__btn { background: $slate; color: $on-dark; padding: 6px 12px; border-radius: 8px; }
+}
+
+// --- écran vendeur ---
+.pv {
+  padding: 6px 14px 0;
+  &__mode {
+    display: flex; justify-content: space-between; align-items: center;
+    background: $slate; color: $on-dark; border-radius: 10px; padding: 7px 10px; margin-bottom: 10px; font-size: 9px;
+    i { width: 22px; height: 12px; border-radius: 99px; background: $brass; position: relative;
+      &::after { content: ""; position: absolute; right: 2px; top: 2px; width: 8px; height: 8px; border-radius: 50%; background: #fff; } }
+  }
+  &__item {
+    display: flex; gap: 8px; align-items: center;
+    background: #fff; border-radius: 10px; padding: 5px; margin-bottom: 7px;
+    img { width: 46px; height: 46px; border-radius: 7px; flex-shrink: 0; }
+    b { display: block; font-weight: 500; font-size: 9.5px; }
+    small { display: block; color: $ink-mute; font-size: 8.5px; margin-bottom: 2px; }
+  }
+  &__badge { font-size: 7.5px; padding: 1px 6px; border-radius: 99px; background: rgba($brass, .25); color: $brass-ink;
+    &--ok { background: rgba(60, 130, 90, .15); color: #2F6B49; } }
+  &__add { border: 1px dashed $line; border-radius: 10px; text-align: center; padding: 9px; color: $ink-mute; }
+}

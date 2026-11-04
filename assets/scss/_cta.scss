@@ -1,0 +1,36 @@
+@import "tokens";
+
+.cta-band {
+  padding: 0 0 clamp(72px, 10vw, 120px);
+  background: $linen;
+
+  &__box {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    background: $slate;
+    color: $on-dark;
+  }
+
+  &__text {
+    padding: clamp(40px, 6vw, 80px);
+    .title { margin: 26px 0 16px; }
+    .lead { color: $on-dark-mute; margin-bottom: 32px; }
+    .serif { color: $brass; }
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 320px;
+    filter: saturate(.85) brightness(.9);
+  }
+
+  @include md {
+    &__box { grid-template-columns: 1fr; }
+    &__img { min-height: 240px; max-height: 320px; order: -1; }
+  }
+}

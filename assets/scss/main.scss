@@ -1,9 +1,21 @@
+// Point d'entrée historique (compilé vers assets/css/main.css, non référencé par l'app Nuxt).
+// L'app Nuxt importe chaque partial directement depuis ses composants.
+@import "base";
+@import "logo";
 @import "header";
-@import "services";
-@import "offres";
-@import "app";
-@import "temoignage";
 @import "footer";
+@import "hero";
+@import "promise";
+@import "how";
+@import "examples";
+@import "showcase";
+@import "faq";
+@import "cta";
+@import "page-hero";
+@import "phone";
+@import "store";
+@import "role-toggle";
+@import "fonctionnement";
 @import "about";
-@import "become";
-@import "login";
+@import "contact";
+@import "download";

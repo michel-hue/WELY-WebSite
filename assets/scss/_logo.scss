@@ -1,0 +1,28 @@
+@import "tokens";
+
+.welly-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
+
+  &__word {
+    font-family: $font-sans;
+    font-weight: 300;
+    font-size: 15px;
+    letter-spacing: 0.34em;
+    margin-right: -0.34em; // compense le letter-spacing final
+  }
+
+  &--light {
+    color: $on-dark;
+    .welly-logo__house { fill: $on-dark; }
+    .welly-logo__w { stroke: $slate; }
+  }
+
+  &--dark {
+    color: $ink;
+    .welly-logo__house { fill: $slate; }
+    .welly-logo__w { stroke: $linen; }
+  }
+}

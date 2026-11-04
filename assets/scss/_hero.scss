@@ -1,0 +1,150 @@
+@import "tokens";
+
+// Ouverture « plein cadre doux » : photo arrondie en retrait, voile sombre en bas,
+// carte en verre dépoli avec la bascule « Je cherche / Je propose ».
+.hero {
+  background: $night;
+  padding: 10px;
+
+  &__frame {
+    position: relative;
+    min-height: max(640px, calc(100svh - 20px));
+    border-radius: $radius-lg;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    isolation: isolate;
+  }
+
+  &__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    transform: scale(1.06);
+    animation: hero-zoom 2.4s $ease forwards;
+  }
+
+  &__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgba($night, .55) 0%, rgba($night, 0) 26%),
+      linear-gradient(180deg, rgba($night, 0) 35%, rgba($night, .78) 100%),
+      linear-gradient(90deg, rgba($night, .45) 0%, rgba($night, 0) 60%);
+  }
+
+  &__content {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+    padding-top: 140px;
+    padding-bottom: clamp(40px, 6vw, 72px);
+    color: #fff;
+  }
+
+  &__eyebrow {
+    font-size: 12px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    opacity: .85;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    @include display(clamp(40px, 6.4vw, 84px));
+    .serif { color: lighten($brass, 18%); }
+  }
+
+  &__lead {
+    margin-top: 22px;
+    font-size: 17px;
+    max-width: 44ch;
+    opacity: .88;
+  }
+
+  &__card {
+    flex: 0 0 320px;
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .22);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .5);
+  }
+
+  &__pitch {
+    margin: 16px 2px 18px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    min-height: 3.2em;
+    opacity: .92;
+  }
+
+  &__btn { width: 100%; }
+
+  &__more {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 13px;
+    opacity: .8;
+    &:hover { opacity: 1; }
+  }
+
+  &__scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 36px;
+    border: 1px solid rgba(255, 255, 255, .45);
+    border-radius: 999px;
+
+    span {
+      position: absolute;
+      left: 50%;
+      top: 7px;
+      width: 2px;
+      height: 7px;
+      margin-left: -1px;
+      border-radius: 2px;
+      background: #fff;
+      animation: hero-scroll 2.2s $ease infinite;
+    }
+  }
+
+  @include md {
+    &__content { flex-direction: column; align-items: stretch; gap: 28px; }
+    &__card { flex-basis: auto; max-width: 420px; }
+    &__scroll { display: none; }
+  }
+
+  @include sm {
+    padding: 6px;
+    &__frame { border-radius: 16px; min-height: calc(100svh - 12px); }
+    &__lead { font-size: 15.5px; }
+  }
+}
+
+.fade-swap-enter-active, .fade-swap-leave-active { transition: opacity .25s $ease, transform .25s $ease; }
+.fade-swap-enter-from { opacity: 0; transform: translateY(6px); }
+.fade-swap-leave-to { opacity: 0; transform: translateY(-6px); }
+
+@keyframes hero-zoom { to { transform: scale(1); } }
+@keyframes hero-scroll {
+  0% { opacity: 0; transform: translateY(0); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(12px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__img { animation: none; transform: none; }
+  .hero__scroll span { animation: none; }
+}

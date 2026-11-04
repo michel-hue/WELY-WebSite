@@ -1,0 +1,40 @@
+@import "tokens";
+
+// En-tête sombre des pages intérieures (à propos, fonctionnement, contact, téléchargement)
+.page-hero {
+  position: relative;
+  background: $night;
+  color: $on-dark;
+  padding: 180px 0 96px;
+  overflow: hidden;
+
+  // halo laiton très discret
+  &::before {
+    content: "";
+    position: absolute;
+    right: -10%;
+    top: -40%;
+    width: 640px;
+    height: 640px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba($brass, .16) 0%, rgba($brass, 0) 65%);
+    pointer-events: none;
+  }
+
+  .eyebrow { color: $brass; }
+
+  &__title {
+    @include display(clamp(40px, 6vw, 76px));
+    max-width: 16ch;
+    .serif { color: lighten($brass, 12%); }
+  }
+
+  &__lead {
+    margin-top: 24px;
+    max-width: 54ch;
+    font-size: 17px;
+    color: $on-dark-mute;
+  }
+
+  @include sm { padding: 140px 0 64px; }
+}
