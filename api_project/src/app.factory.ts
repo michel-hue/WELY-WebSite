@@ -27,6 +27,7 @@ export function configureApp(app: INestApplication): INestApplication {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
+      stopAtFirstError: true,
       transform: true,
       exceptionFactory: (errors): BadRequestException =>
         badRequest('VALIDATION_ERROR', 'Certaines informations sont invalides.', flatten(errors)),

@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
 import { ListingsModule } from './listings/listings.module.js';
 import { PhotosModule } from './photos/photos.module.js';
+import { SearchModule } from './search/search.module.js';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PhotosModule } from './photos/photos.module.js';
     NotificationsModule,
     ListingsModule,
     PhotosModule,
+    SearchModule,
   ],
   controllers: [HealthController],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
