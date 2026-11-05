@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/explore/explore_screen.dart';
+import '../features/listing/listing_screen.dart';
+import '../features/seller/manage_listing_screen.dart';
 import 'shell/home_shell.dart';
 import 'shell/tab_placeholder.dart';
 
@@ -36,10 +38,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/listing/:id',
-        builder: (_, state) => Scaffold(
-          appBar: AppBar(),
-          body: Center(child: Text('Annonce ${state.pathParameters['id']}')),
-        ),
+        builder: (_, state) => ListingScreen(id: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/seller/listings/:id',
+        builder: (_, state) => ManageListingScreen(id: state.pathParameters['id']!),
       ),
     ],
   );

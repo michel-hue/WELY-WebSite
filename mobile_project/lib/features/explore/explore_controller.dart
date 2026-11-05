@@ -156,6 +156,12 @@ class ExploreController extends Notifier<ExploreState> {
 
   void focus(String? id) => state = state.copyWith(focusedId: id);
 
+  /// Retire une annonce des résultats (ex. après l'avoir signalée).
+  void removeListing(String id) => state = state.copyWith(
+        items: [for (final c in state.items) if (c.id != id) c],
+        focusedId: state.focusedId == id ? null : state.focusedId,
+      );
+
   Future<void> _search() async {
     final gen = ++_generation;
     state = state.copyWith(loading: true, error: null, loadMoreFailed: false, loadingMore: false);

@@ -38,3 +38,6 @@ String formatDate(DateTime d, {bool long = false, bool withYear = false}) {
   final month = (long ? _monthsLong : _monthsShort)[d.month - 1];
   return '$day $month${withYear ? ' ${d.year}' : ''}';
 }
+
+/// `mars 2024`.
+String formatMonthYear(DateTime d) => '${_monthsLong[d.month - 1]} ${d.year}';
