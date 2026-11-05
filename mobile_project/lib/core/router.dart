@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/explore/explore_screen.dart';
 import 'shell/home_shell.dart';
 import 'shell/tab_placeholder.dart';
 
@@ -22,8 +23,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => HomeShell(navigationShell: shell),
         branches: [
-          _tab('/explore', const Key('tab-explore'), 'Explorer les ',
-              'annonces'),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/explore',
+              builder: (_, _) => const ExploreScreen(key: Key('tab-explore')),
+            ),
+          ]),
           _tab('/favorites', const Key('tab-favorites'), 'Vos ', 'favoris'),
           _tab('/requests', const Key('tab-requests'), 'Vos ', 'demandes'),
           _tab('/profile', const Key('tab-profile'), 'Votre ', 'profil'),

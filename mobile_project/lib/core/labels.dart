@@ -1,3 +1,5 @@
+import '../features/listings/models.dart' show OfferType;
+
 const propertyTypeLabels = {
   'house': 'Maison',
   'villa': 'Villa',
@@ -53,3 +55,9 @@ const reportReasonLabels = {
 };
 
 String labelOf(Map<String, String> labels, String key) => labels[key] ?? key;
+
+String offerTypeLabel(OfferType t) => switch (t) {
+      OfferType.monthly => 'Au mois',
+      OfferType.nightly => 'À la nuit',
+      OfferType.sale => 'À vendre',
+    };
