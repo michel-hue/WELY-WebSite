@@ -1,0 +1,75 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile_project/core/api/api_client.dart';
+import 'package:mobile_project/core/installation_id.dart';
+import 'package:mobile_project/core/session/session_controller.dart';
+import 'package:mobile_project/core/session/session_store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/fake_adapter.dart';
+
+ProviderContainer makeContainer(FakeAdapter adapter, MemorySessionStore store) {
+  SharedPreferences.setMockInitialValues({});
+  final c = ProviderContainer(overrides: [
+    sessionStoreProvider.overrideWithValue(store),
+    httpAdapterProvider.overrideWithValue(adapter),
+  ]);
+  addTearDown(c.dispose);
+  return c;
+}
+
+void main() {
+  test('verifyOtp stores both tokens and exposes Me', () async {
+    final store = MemorySessionStore();
+    final adapter = FakeAdapter((o) async {
+      if (o.path == '/auth/otp/verify') {
+        expect(o.data, {'phone': '0707070707', 'code': '123456', 'name': 'Awa Koné'});
+        return jsonBody({'accessToken': 'a1', 'refreshToken': 'r1', 'user': meJson});
+      }
+      return jsonBody({}, 404);
+    });
+    final c = makeContainer(adapter, store);
+    expect(await c.read(sessionControllerProvider.future), isNull);
+    await c.read(sessionControllerProvider.notifier).verifyOtp('0707070707', '123456', name: 'Awa Koné');
+    expect(store.access, 'a1');
+    expect(store.refresh, 'r1');
+    final me = c.read(sessionControllerProvider).value;
+    expect(me?.name, 'Awa Koné');
+    expect(me?.isSeller, isFalse);
+  });
+
+  test('expired refresh leaves the user anonymous', () async {
+    final store = MemorySessionStore(access: 'old', refresh: 'r1');
+    final adapter = FakeAdapter((o) async => jsonBody({'error': {'code': 'UNAUTHORIZED', 'message': 'x'}}, 401));
+    final c = makeContainer(adapter, store);
+    expect(await c.read(sessionControllerProvider.future), isNull);
+    expect(store.access, isNull);
+    expect(store.refresh, isNull);
+  });
+
+  test('requestOtp works; logout clears session even when the server is unreachable', () async {
+    final store = MemorySessionStore(access: 'a', refresh: 'r');
+    final adapter = FakeAdapter((o) async {
+      if (o.path == '/me') return jsonBody(meJson);
+      if (o.path == '/auth/otp/request') return jsonBody({'expiresInSeconds': 300, 'isNewUser': true}, 202);
+      throw StateError('offline');
+    });
+    final c = makeContainer(adapter, store);
+    expect((await c.read(sessionControllerProvider.future))?.id, 'u1');
+    final r = await c.read(sessionControllerProvider.notifier).requestOtp('0707070707');
+    expect(r.expiresInSeconds, 300);
+    expect(r.isNewUser, isTrue);
+    await c.read(sessionControllerProvider.notifier).logout();
+    expect(store.refresh, isNull);
+    expect(c.read(sessionControllerProvider).value, isNull);
+  });
+
+  test('installation id is generated once and persisted', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final a = await loadInstallationId(prefs);
+    final b = await loadInstallationId(prefs);
+    expect(a, b);
+    expect(a.length, 36);
+  });
+}
