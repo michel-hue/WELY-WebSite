@@ -16,6 +16,10 @@ class FavoritesController extends AsyncNotifier<List<ListingCard>> {
       isFavorite(card.id) ? [for (final c in current) if (c.id != card.id) c] : [card, ...current],
     );
   }
+
+  /// Appelé juste après une connexion par code : fusionne les favoris du
+  /// téléphone dans le compte. STUB : sans effet ; la Task 8 l'implémente.
+  Future<void> syncAfterSignIn() async {}
 }
 
 final favoritesProvider = AsyncNotifierProvider<FavoritesController, List<ListingCard>>(FavoritesController.new);
