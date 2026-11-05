@@ -28,7 +28,7 @@ const listingStatusLabels = {
   'online': 'En ligne',
   'expired': 'Expirée',
   'deactivated': 'Désactivée',
-  'closed': 'Clôturée',
+  'closed': 'Close',
 };
 
 const closedReasonLabels = {'rented': 'Louée', 'sold': 'Vendue'};

@@ -5,20 +5,12 @@ import 'package:go_router/go_router.dart';
 import '../features/explore/explore_screen.dart';
 import '../features/favorites/favorites_screen.dart';
 import '../features/listing/listing_screen.dart';
+import '../features/notifications/notifications_screen.dart';
+import '../features/profile/profile_screen.dart';
 import '../features/requests/requests_screen.dart';
+import '../features/seller/listing_editor_screen.dart';
 import '../features/seller/manage_listing_screen.dart';
 import 'shell/home_shell.dart';
-import 'shell/tab_placeholder.dart';
-
-StatefulShellBranch _tab(String path, Key key, String before, String serif) {
-  return StatefulShellBranch(routes: [
-    GoRoute(
-      path: path,
-      builder: (_, _) =>
-          TabPlaceholder(key: key, before: before, serif: serif),
-    ),
-  ]);
-}
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -45,12 +37,26 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               builder: (_, _) => const RequestsScreen(key: Key('tab-requests')),
             ),
           ]),
-          _tab('/profile', const Key('tab-profile'), 'Votre ', 'profil'),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/profile',
+              builder: (_, _) => const ProfileScreen(key: Key('tab-profile')),
+            ),
+          ]),
         ],
       ),
       GoRoute(
         path: '/listing/:id',
         builder: (_, state) => ListingScreen(id: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/notifications',
+        builder: (_, _) => const NotificationsScreen(),
+      ),
+      // Avant `/seller/listings/:id` : sinon « new » serait pris pour un identifiant.
+      GoRoute(
+        path: '/seller/listings/new',
+        builder: (_, _) => const ListingEditorScreen(),
       ),
       GoRoute(
         path: '/seller/listings/:id',

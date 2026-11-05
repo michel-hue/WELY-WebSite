@@ -115,9 +115,61 @@ class FakeRequestsRepository extends Fake implements RequestsRepository {
   }
 }
 
+SellerListing sampleSellerListing({
+  String id = 'l1',
+  ListingStatus status = ListingStatus.online,
+  String title = 'Villa avec piscine',
+  int views = 0,
+  int requests = 0,
+  ClosedReason? closedReason,
+  DateTime? publishedUntil,
+}) =>
+    SellerListing(
+      id: id,
+      status: status,
+      closedReason: closedReason,
+      title: title,
+      description: '',
+      propertyType: 'villa',
+      rooms: 4,
+      amenities: const [],
+      city: 'Abidjan',
+      district: 'Riviera 3',
+      offers: const Offers(monthly: MonthlyOffer(rent: 650000)),
+      publishedUntil: publishedUntil,
+      photos: const [],
+      stats: ListingStats(views: views, contactClicks: 0, requests: requests),
+      createdAt: DateTime(2026, 11, 1),
+      updatedAt: DateTime(2026, 11, 2),
+    );
+
+/// Faux dépôt des annonces du vendeur : liste programmable, appels enregistrés.
 class FakeSellerListingsRepository extends Fake implements SellerListingsRepository {
+  FakeSellerListingsRepository({this.listings = const [], this.error});
+  List<SellerListing> listings;
+  Object? error;
+  Object? actionError;
+  int mineCalls = 0;
   final closed = <(String, ClosedReason)>[];
+  final calls = <String>[];
 
   @override
   Future<void> close(String listingId, ClosedReason reason) async => closed.add((listingId, reason));
+
+  @override
+  Future<Page<SellerListing>> mine({ListingStatus? status, String? cursor, int? limit}) async {
+    mineCalls++;
+    if (error != null) throw error!;
+    return Page(data: listings);
+  }
+
+  @override
+  Future<SellerListing> reactivate(String id, {String? until}) async {
+    calls.add('reactivate:$id:${until ?? 'permanent'}');
+    if (actionError != null) throw actionError!;
+    final l = listings.firstWhere((x) => x.id == id);
+    final updated = sampleSellerListing(id: l.id, title: l.title, status: ListingStatus.online);
+    listings = [for (final x in listings) x.id == id ? updated : x];
+    return updated;
+  }
 }

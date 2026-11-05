@@ -11,3 +11,6 @@ String get apiBaseUrl {
   if (!kIsWeb && Platform.isAndroid) return 'http://10.0.2.2:3000/v1';
   return 'http://localhost:3000/v1';
 }
+
+/// Version affichée dans « À propos » (même valeur que `pubspec.yaml`).
+const appVersion = '1.0.0';
