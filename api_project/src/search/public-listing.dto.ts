@@ -1,8 +1,9 @@
 import type { Listing } from '../listings/listing.entity.js';
 import { locationOf, offersOf, type OffersView, type PhotoDto } from '../listings/listing.mapper.js';
 import type { User } from '../users/user.entity.js';
+import { approxLocation } from './approx-location.js';
 
-/** Carte de liste : jamais de coordonnées exactes. */
+/** Carte de liste : jamais de coordonnées exactes (position décalée de quelques centaines de mètres). */
 export interface ListingCardDto {
   id: string;
   title: string;
@@ -14,6 +15,7 @@ export interface ListingCardDto {
   rooms: number;
   distanceMeters: number | null;
   publishedAt: string | null;
+  approxLocation: { lat: number; lng: number } | null;
 }
 
 export interface PublicSellerDto {
@@ -49,6 +51,7 @@ export const toCardDto = (l: Listing, cover: PhotoDto | undefined, distance: num
   rooms: l.rooms,
   distanceMeters: distance === null ? null : Math.round(distance),
   publishedAt: l.publishedAt?.toISOString() ?? null,
+  approxLocation: approxLocation(l.id, locationOf(l)),
 });
 
 export const toPublicDto = (l: Listing, photos: PhotoDto[], seller: User, onlineListingsCount: number): PublicListingDto => ({

@@ -32,6 +32,8 @@ export interface RequestDto {
   decidedAt: string | null;
   listing: ListingCardDto;
   buyer?: { id: string; name: string; phone: string | null };
+  /** Côté acheteur : de quoi recontacter le vendeur, même une fois l'annonce close. */
+  seller?: { id: string; name: string; phone: string | null; whatsappPhone: string | null };
 }
 
 const NOT_FOUND = () => notFound('REQUEST_NOT_FOUND', 'Demande introuvable.');
@@ -320,8 +322,13 @@ export class RequestsService {
     const buyers = withBuyer
       ? new Map((await this.users.findBy({ id: In([...new Set(requests.map((r) => r.buyerId))]) })).map((u) => [u.id, u]))
       : new Map<string, User>();
+    const owners = withBuyer
+      ? new Map<string, User>()
+      : new Map((await this.users.findBy({ id: In([...new Set(listings.map((l) => l.ownerId))]) })).map((u) => [u.id, u]));
+    const ownerOf = new Map(listings.map((l) => [l.id, l.ownerId]));
     return requests.map((r) => {
       const buyer = buyers.get(r.buyerId);
+      const seller = owners.get(ownerOf.get(r.listingId) ?? '');
       return {
         id: r.id,
         status: r.status,
@@ -337,6 +344,9 @@ export class RequestsService {
         decidedAt: r.decidedAt?.toISOString() ?? null,
         listing: cards.get(r.listingId)!,
         ...(withBuyer && buyer ? { buyer: { id: buyer.id, name: buyer.name, phone: buyer.phone } } : {}),
+        ...(!withBuyer && seller
+          ? { seller: { id: seller.id, name: seller.name, phone: seller.phone, whatsappPhone: seller.whatsappPhone ?? seller.phone } }
+          : {}),
       };
     });
   }
