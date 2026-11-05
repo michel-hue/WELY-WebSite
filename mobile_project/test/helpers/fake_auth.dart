@@ -48,7 +48,7 @@ class FakeFavorites extends FavoritesController {
   Future<List<ListingCard>> build() async => const [];
 
   @override
-  Future<void> syncAfterSignIn() async {
+  Future<void> mergeLocalIntoAccount() async {
     log.add('favorites');
     if (fail) throw const ApiError.network();
   }

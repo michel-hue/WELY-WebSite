@@ -19,5 +19,15 @@ void main() {
     await tester.tap(find.text('Profil'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('tab-profile')), findsOneWidget);
+
+    await tester.tap(find.text('Favoris'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('tab-favorites')), findsOneWidget);
+    expect(find.text('Touchez ♡ sur un logement pour le retrouver ici'), findsOneWidget);
+
+    await tester.tap(find.text('Demandes'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('tab-requests')), findsOneWidget);
+    expect(find.text('Se connecter'), findsOneWidget);
   });
 }

@@ -38,6 +38,13 @@ class Offers {
         sale: j['sale'] is Map ? SaleOffer.fromJson((j['sale'] as Map).cast<String, dynamic>()) : null,
       );
 
+  /// Même forme que l'API (stockage local des favoris).
+  Map<String, dynamic> toJson() => {
+        'monthly': monthly == null ? null : {'rent': monthly!.rent, 'terms': monthly!.terms},
+        'nightly': nightly == null ? null : {'price': nightly!.price, 'minNights': nightly!.minNights},
+        'sale': sale == null ? null : {'price': sale!.price},
+      };
+
   List<OfferType> get types => [
         if (monthly != null) OfferType.monthly,
         if (nightly != null) OfferType.nightly,
@@ -155,6 +162,23 @@ class ListingCard {
         publishedAt: j['publishedAt'] == null ? null : DateTime.parse(j['publishedAt'] as String),
         approxLocation: _latLng(j['approxLocation']),
       );
+
+  /// Champs de carte seulement, au format de l'API (relu par [ListingCard.fromJson]).
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'propertyType': propertyType,
+        'city': city,
+        'district': district,
+        'coverThumbUrl': coverThumbUrl,
+        'offers': offers.toJson(),
+        'rooms': rooms,
+        'distanceMeters': distanceMeters,
+        'publishedAt': publishedAt?.toIso8601String(),
+        'approxLocation': approxLocation == null
+            ? null
+            : {'lat': approxLocation!.latitude, 'lng': approxLocation!.longitude},
+      };
 }
 
 class ListingDetail extends ListingCard {

@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/explore/explore_screen.dart';
+import '../features/favorites/favorites_screen.dart';
 import '../features/listing/listing_screen.dart';
+import '../features/requests/requests_screen.dart';
 import '../features/seller/manage_listing_screen.dart';
 import 'shell/home_shell.dart';
 import 'shell/tab_placeholder.dart';
@@ -31,8 +33,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               builder: (_, _) => const ExploreScreen(key: Key('tab-explore')),
             ),
           ]),
-          _tab('/favorites', const Key('tab-favorites'), 'Vos ', 'favoris'),
-          _tab('/requests', const Key('tab-requests'), 'Vos ', 'demandes'),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/favorites',
+              builder: (_, _) => const FavoritesScreen(key: Key('tab-favorites')),
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/requests',
+              builder: (_, _) => const RequestsScreen(key: Key('tab-requests')),
+            ),
+          ]),
           _tab('/profile', const Key('tab-profile'), 'Votre ', 'profil'),
         ],
       ),

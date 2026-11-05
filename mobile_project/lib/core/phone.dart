@@ -16,3 +16,11 @@ String? normalizePhone(String input) {
   if (digits.startsWith('225')) return digits.length == 13 ? s : null;
   return digits.length >= 8 && digits.length <= 15 ? s : null;
 }
+
+/// Affichage : `+2250707070707` -> `+225 07 07 07 07 07` ; autres formats inchangés.
+String formatPhone(String phone) {
+  final m = RegExp(r'^\+225(\d{10})$').firstMatch(phone.replaceAll(RegExp(r'\s'), ''));
+  if (m == null) return phone;
+  final d = m.group(1)!;
+  return '+225 ${[for (var i = 0; i < 10; i += 2) d.substring(i, i + 2)].join(' ')}';
+}

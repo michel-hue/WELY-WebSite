@@ -15,8 +15,8 @@ import 'package:mobile_project/features/listings/listings_repository.dart';
 import 'package:mobile_project/features/listings/models.dart' hide Page;
 import 'package:mobile_project/features/seller/manage_listing_screen.dart';
 
-import '../core/contact_test.dart' show FakeUrlLauncher;
 import '../helpers/fake_explore.dart';
+import '../helpers/fake_launcher.dart';
 
 ListingDetail sampleDetail({String sellerId = 's1', String? phone = '+2250700000001', String? whatsapp}) => ListingDetail(
       id: '1',

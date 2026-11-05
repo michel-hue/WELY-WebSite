@@ -5,10 +5,10 @@ import 'package:url_launcher/url_launcher.dart';
 /// Canal de contact, tel qu'attendu par `POST /listings/:id/contact-clicks`.
 enum ContactChannel { whatsapp, call }
 
-/// Lien `wa.me` avec le message pré-rempli (spec API §7.5).
-Uri whatsappUri(String phone, String title) {
+/// Lien `wa.me` avec le message pré-rempli (spec API §7.5) ; [message] le remplace.
+Uri whatsappUri(String phone, String title, {String? message}) {
   final digits = phone.replaceAll(RegExp(r'\D'), '');
-  final text = Uri.encodeComponent('Bonjour, je suis intéressé par « $title » vu sur WELLY');
+  final text = Uri.encodeComponent(message ?? 'Bonjour, je suis intéressé par « $title » vu sur WELLY');
   return Uri.parse('https://wa.me/$digits?text=$text');
 }
 
@@ -55,8 +55,9 @@ Future<ContactChannel?> openWhatsAppOrCall(
   String title, {
   String? callPhone,
   Future<bool> Function()? confirmCall,
+  String? message,
 }) async {
-  if (await launcher.launch(whatsappUri(phone, title), appOnly: true)) return ContactChannel.whatsapp;
+  if (await launcher.launch(whatsappUri(phone, title, message: message), appOnly: true)) return ContactChannel.whatsapp;
   final tel = telUri(callPhone ?? phone);
   if (!await launcher.canLaunch(tel)) return null;
   if (confirmCall != null && !await confirmCall()) return null;

@@ -148,7 +148,7 @@ class _OtpPanelState extends ConsumerState<OtpPanel> {
       return;
     }
     try {
-      await favorites.syncAfterSignIn();
+      await favorites.mergeLocalIntoAccount();
     } catch (_) {
       // La fusion des favoris ne doit jamais empêcher la suite.
     }

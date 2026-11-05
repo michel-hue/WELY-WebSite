@@ -16,6 +16,7 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/serif_title.dart';
 import '../explore/explore_controller.dart';
 import '../explore/map_view.dart' show cartoPositronUrl, tileProviderOverrideProvider;
+import '../favorites/favorite_button.dart';
 import '../favorites/favorites_controller.dart';
 import '../listings/listings_repository.dart';
 import '../listings/models.dart' hide Page;
@@ -27,7 +28,17 @@ import 'report_sheet.dart';
 /// Fiche d'une annonce (`GET /listings/:id`). Pas de nouvel essai automatique :
 /// une 404 est définitive, et « Réessayer » relance à la demande.
 final listingDetailProvider = FutureProvider.autoDispose.family<ListingDetail, String>(
-  (ref, id) => ref.read(listingsRepositoryProvider).detail(id),
+  (ref, id) async {
+    try {
+      return await ref.read(listingsRepositoryProvider).detail(id);
+    } catch (e) {
+      // Fiche disparue : un favori local devient « plus disponible ».
+      if (_isGone(ApiError.of(e)) && ref.exists(favoritesProvider)) {
+        unawaited(ref.read(favoritesProvider.notifier).markUnavailable(id).catchError((Object _) {}));
+      }
+      rethrow;
+    }
+  },
   retry: (_, _) => null,
 );
 
@@ -278,7 +289,7 @@ class _ListingViewState extends ConsumerState<_ListingView> {
               icon: favorite ? Icons.favorite : Icons.favorite_border,
               color: favorite ? WellyColors.laitonText : WellyColors.ink,
               tooltip: favorite ? 'Retirer des favoris' : 'Ajouter aux favoris',
-              onTap: () => ref.read(favoritesProvider.notifier).toggle(_asCard),
+              onTap: () => toggleFavorite(context, ref, _asCard),
             ),
           ]),
         ),

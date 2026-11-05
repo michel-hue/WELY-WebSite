@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/serif_title.dart';
+import '../favorites/favorite_button.dart';
 import '../listings/models.dart' hide Page;
 import 'explore_controller.dart';
 import 'listing_photo_card.dart';
@@ -119,6 +120,7 @@ class _ListingsSheetState extends ConsumerState<ListingsSheet> {
                         items[i],
                         key: ValueKey('card-${items[i].id}'),
                         onTap: () => widget.onOpen(items[i]),
+                        favorite: FavoriteButton(items[i]),
                       ),
                     ),
                   ),

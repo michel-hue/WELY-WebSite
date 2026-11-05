@@ -42,6 +42,17 @@ void main() {
     expect(find.text('Activer la position'), findsOneWidget);
   });
 
+  testWidgets('♡ on an Explore card adds it to the favorites', (tester) async {
+    final repo = FakeListingsRepository(result: [card('1', 'Studio lumineux')]);
+    await pumpExplore(tester, repo);
+
+    final heart = find.byKey(const ValueKey('favorite-1'));
+    expect(find.descendant(of: heart, matching: find.byIcon(Icons.favorite_border)), findsOneWidget);
+    await tester.tap(heart);
+    await tester.pumpAndSettle();
+    expect(find.descendant(of: heart, matching: find.byIcon(Icons.favorite)), findsOneWidget);
+  });
+
   testWidgets('typing in search and submitting searches with q', (tester) async {
     final repo = FakeListingsRepository(result: [card('1', 'Studio lumineux')]);
     await pumpExplore(tester, repo);

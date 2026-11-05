@@ -10,6 +10,7 @@ import '../../core/widgets/serif_title.dart';
 import '../../core/widgets/soft_banner.dart';
 import '../auth/otp_panel.dart';
 import '../listings/models.dart' hide Page;
+import 'requests_controller.dart';
 import 'requests_repository.dart';
 
 const _dateErrorCodes = {'STAY_DATES_UNAVAILABLE', 'INVALID_STAY_DATES', 'MIN_NIGHTS_NOT_MET'};
@@ -165,7 +166,10 @@ class _RequestSheetState extends ConsumerState<RequestSheet> {
         message: _message.text,
         wantsVisit: _wantsVisit,
       );
-      if (mounted) Navigator.of(context).pop(true);
+      if (!mounted) return;
+      // L'onglet Demandes affichera la nouvelle demande.
+      ref.invalidate(sentRequestsProvider);
+      Navigator.of(context).pop(true);
     } catch (e) {
       if (mounted) _showError(ApiError.of(e));
     }

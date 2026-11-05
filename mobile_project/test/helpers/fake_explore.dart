@@ -5,10 +5,15 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mobile_project/core/session/session_controller.dart';
 import 'package:mobile_project/features/explore/location_service.dart';
 import 'package:mobile_project/features/explore/map_view.dart';
+import 'package:mobile_project/features/favorites/favorites_repository.dart';
 import 'package:mobile_project/features/listings/listings_repository.dart';
 import 'package:mobile_project/features/listings/models.dart';
+
+import 'fake_auth.dart';
+import 'fake_favorites.dart';
 
 class SearchCall {
   SearchCall(this.filters, this.near, this.radiusKm, this.cursor);
@@ -77,4 +82,7 @@ List<Override> exploreOverrides({
       listingsRepositoryProvider.overrideWithValue(repo),
       locationServiceProvider.overrideWithValue(location ?? FakeLocationService()),
       tileProviderOverrideProvider.overrideWithValue(BlankTileProvider()),
+      // Le ♡ des cartes lit la session et les favoris locaux : rien de réel en test.
+      sessionControllerProvider.overrideWith(() => FakeAuthSession()),
+      favoritesLocalStoreProvider.overrideWithValue(MemoryFavoritesStore()),
     ];
