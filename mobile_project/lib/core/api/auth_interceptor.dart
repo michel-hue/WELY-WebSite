@@ -45,7 +45,13 @@ class AuthInterceptor extends Interceptor {
 
     final req = err.requestOptions;
     final usedBearer = req.headers['Authorization'] as String?;
-    if (err.response?.statusCode == 401 && usedBearer != null && req.extra[_retriedKey] != true) {
+    // Seul UNAUTHORIZED (garde JWT) signifie « access token expiré » ; les 401
+    // métier (OTP_INVALID, REFRESH_INVALID...) et les routes /auth/* ne se rejouent pas.
+    if (err.response?.statusCode == 401 &&
+        usedBearer != null &&
+        req.extra[_retriedKey] != true &&
+        !req.path.startsWith('/auth/') &&
+        ApiError.fromDio(err).code == 'UNAUTHORIZED') {
       final token = await _freshAccessToken(usedBearer);
       if (token != null) {
         req.extra[_retriedKey] = true;
@@ -98,8 +104,8 @@ class AuthInterceptor extends Interceptor {
       await store.save(access: access, refresh: data['refreshToken'] as String);
       return access;
     } on DioException catch (e) {
-      // Réponse du serveur = session invalide ; sinon (réseau) on garde la session.
-      if (e.response != null) {
+      // 401 = jeton de rafraîchissement invalide -> session perdue ; réseau, 429, 5xx : on la garde.
+      if (e.response?.statusCode == 401) {
         await store.clear();
         onSessionExpired();
       }

@@ -97,6 +97,31 @@ void main() {
     expect(adapter.count('POST', '/auth/refresh'), 1);
   });
 
+  test('domain 401 on /auth/* (OTP_INVALID) never triggers a refresh', () async {
+    final store = MemorySessionStore(access: 'old', refresh: 'r1');
+    final adapter = FakeAdapter((o) async =>
+        jsonBody({'error': {'code': 'OTP_INVALID', 'message': 'Code incorrect.'}}, 401));
+    final err = await errorOf(makeDio(adapter, store).post('/auth/otp/verify', data: {'phone': 'x', 'code': '000000'}));
+    expect(err.code, 'OTP_INVALID');
+    expect(adapter.count('POST', '/auth/refresh'), 0);
+    expect(adapter.count('POST', '/auth/otp/verify'), 1);
+    expect(store.refresh, 'r1');
+  });
+
+  test('500 on refresh keeps the session', () async {
+    final store = MemorySessionStore(access: 'old', refresh: 'r1');
+    var expired = 0;
+    final adapter = FakeAdapter((o) async {
+      if (o.path == '/auth/refresh') return jsonBody({'error': {'code': 'INTERNAL_ERROR', 'message': 'x'}}, 500);
+      return unauthorized();
+    });
+    final err = await errorOf(makeDio(adapter, store, onExpired: () => expired++).get('/a'));
+    expect(err.status, 401);
+    expect(store.access, 'old');
+    expect(store.refresh, 'r1');
+    expect(expired, 0);
+  });
+
   test('network failure during refresh keeps the session', () async {
     final store = MemorySessionStore(access: 'old', refresh: 'r1');
     final adapter = FakeAdapter((o) async {

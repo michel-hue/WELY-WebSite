@@ -47,6 +47,22 @@ void main() {
     expect(store.refresh, isNull);
   });
 
+  test('mid-session expiry (refresh refused) moves state from Me to null', () async {
+    final store = MemorySessionStore(access: 'a', refresh: 'r');
+    var meCalls = 0;
+    final adapter = FakeAdapter((o) async {
+      // Premier GET /me (démarrage) OK ; ensuite tout est refusé, refresh compris.
+      if (o.path == '/me' && meCalls++ == 0) return jsonBody(meJson);
+      return jsonBody({'error': {'code': 'UNAUTHORIZED', 'message': 'Connexion requise.'}}, 401);
+    });
+    final c = makeContainer(adapter, store);
+    expect((await c.read(sessionControllerProvider.future))?.id, 'u1');
+    await expectLater(c.read(sessionControllerProvider.notifier).refreshMe(), throwsA(anything));
+    await Future<void>.delayed(Duration.zero);
+    expect(c.read(sessionControllerProvider).value, isNull);
+    expect(store.refresh, isNull);
+  });
+
   test('requestOtp works; logout clears session even when the server is unreachable', () async {
     final store = MemorySessionStore(access: 'a', refresh: 'r');
     final adapter = FakeAdapter((o) async {
