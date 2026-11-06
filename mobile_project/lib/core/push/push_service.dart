@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -15,6 +14,9 @@ abstract interface class PushService {
   /// Jeton de l'appareil, ou `null` s'il n'est pas disponible.
   Future<String?> token();
 
+  /// Jeton déjà connu, sans jamais demander de permission (désinscription).
+  Future<String?> currentToken();
+
   /// Émet un évènement à chaque notification reçue application ouverte.
   Stream<void> get onForegroundMessage;
 }
@@ -23,6 +25,9 @@ abstract interface class PushService {
 class NoopPushService implements PushService {
   @override
   Future<String?> token() async => null;
+
+  @override
+  Future<String?> currentToken() async => null;
 
   @override
   Stream<void> get onForegroundMessage => const Stream.empty();
@@ -37,6 +42,16 @@ class FirebasePushService implements PushService {
     try {
       await _messaging.requestPermission();
       // L'API enregistre des jetons FCM : getToken (déprécié) les renvoie, contrairement à register().
+      // ignore: deprecated_member_use
+      return await _messaging.getToken();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> currentToken() async {
+    try {
       // ignore: deprecated_member_use
       return await _messaging.getToken();
     } catch (_) {
@@ -89,16 +104,25 @@ class PushRegistrar {
     } catch (_) {}
   }
 
+  /// Retire le jeton côté API ; borné par [pushUnregisterTimeoutProvider] pour ne
+  /// jamais retarder la déconnexion. Ne lève jamais.
   Future<void> unregister() async {
     try {
-      final token = await _token();
-      if (token == null) return;
-      await _ref.read(dioProvider).delete<void>('/me/devices/${Uri.encodeComponent(token)}');
+      await _unregister().timeout(_ref.read(pushUnregisterTimeoutProvider));
     } catch (_) {
-      // Best-effort.
+      // Best-effort (échec réseau, délai dépassé...).
     }
   }
+
+  Future<void> _unregister() async {
+    final service = await _ref.read(pushServiceProvider.future);
+    final token = await service.currentToken();
+    if (token == null) return;
+    await _ref.read(dioProvider).delete<void>('/me/devices/${Uri.encodeComponent(token)}');
+  }
 }
+
+final pushUnregisterTimeoutProvider = Provider<Duration>((ref) => const Duration(seconds: 3));
 
 final pushRegistrarProvider = Provider<PushRegistrar>(PushRegistrar.new);
 
