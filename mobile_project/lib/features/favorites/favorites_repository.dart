@@ -48,11 +48,12 @@ class FavoritesRepository {
 
   Future<void> remove(String listingId) => _guard(() => _dio.delete<void>('/me/favorites/$listingId'));
 
-  /// Fusionne les favoris gardés sur le téléphone (ids inconnus ignorés par l'API).
-  Future<void> merge(List<String> listingIds) => _guard(() => _dio.post<void>(
-        '/me/favorites/merge',
-        data: {'listingIds': listingIds.take(mergeLimit).toList()},
-      ));
+  /// Fusionne des favoris gardés sur le téléphone (ids inconnus ignorés par
+  /// l'API). Au plus [mergeLimit] ids par appel : l'appelant découpe.
+  Future<void> merge(List<String> listingIds) {
+    assert(listingIds.length <= mergeLimit, 'merge: $mergeLimit ids max par appel');
+    return _guard(() => _dio.post<void>('/me/favorites/merge', data: {'listingIds': listingIds}));
+  }
 }
 
 final favoritesRepositoryProvider = Provider<FavoritesRepository>((ref) => FavoritesRepository(ref.read(dioProvider)));

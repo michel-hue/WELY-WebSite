@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/api/api_error.dart';
+import '../../core/session/session_controller.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/calm_message.dart';
 import '../../core/widgets/serif_title.dart';
@@ -20,9 +21,15 @@ class FavoritesScreen extends ConsumerWidget {
     final favorites = ref.watch(favoritesProvider);
     final ctrl = ref.read(favoritesProvider.notifier);
 
+    void reload() {
+      // Compte injoignable au démarrage : on retente aussi la session.
+      if (ref.read(sessionControllerProvider).hasError) ref.invalidate(sessionControllerProvider);
+      ref.invalidate(favoritesProvider);
+    }
+
     Future<void> refresh() async {
       try {
-        ref.invalidate(favoritesProvider);
+        reload();
         await ref.read(favoritesProvider.future);
       } catch (_) {
         // L'erreur s'affiche dans l'écran.
@@ -39,7 +46,7 @@ class FavoritesScreen extends ConsumerWidget {
             title: err.isNetwork ? err.message : 'Impossible de charger vos favoris.',
             body: err.isNetwork ? null : err.message,
             action: 'Réessayer',
-            onAction: () => ref.invalidate(favoritesProvider),
+            onAction: reload,
           ),
         );
       },

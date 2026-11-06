@@ -1,15 +1,20 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile_project/core/api/api_client.dart';
 import 'package:mobile_project/core/api/api_error.dart';
 import 'package:mobile_project/core/session/session_controller.dart';
+import 'package:mobile_project/core/session/session_store.dart';
 import 'package:mobile_project/core/theme/app_theme.dart';
 import 'package:mobile_project/features/notifications/notifications_repository.dart';
 import 'package:mobile_project/features/profile/profile_screen.dart';
 import 'package:mobile_project/features/requests/requests_repository.dart';
 import 'package:mobile_project/features/seller/seller_listings_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/fake_adapter.dart';
 import '../helpers/fake_auth.dart';
 import '../helpers/fake_notifications.dart';
 import '../helpers/fake_profile.dart';
@@ -61,6 +66,8 @@ Future<Harness> pumpProfile(
 Me sellerUser() => copyMe(signedInUser(), isSeller: true);
 
 void main() {
+  offlineStartupTests();
+
   testWidgets('anonymous: welcome, « Se connecter » and « Proposer un logement »', (tester) async {
     final h = await pumpProfile(tester);
     expect(find.text('Bienvenue sur WELLY'), findsOneWidget);
@@ -213,5 +220,48 @@ void main() {
 
     expect(h.session.log.single, startsWith('update:Awa K.'));
     expect(find.text('Awa K.'), findsOneWidget);
+  });
+}
+
+void offlineStartupTests() {
+  testWidgets('offline at startup: « Réessayer » instead of « Se connecter », then the profile once back online',
+      (tester) async {
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    SharedPreferences.setMockInitialValues({});
+    final store = MemorySessionStore(access: 'a', refresh: 'r');
+    var online = false;
+    final adapter = FakeAdapter((o) async {
+      if (!online) throw DioException(requestOptions: o, type: DioExceptionType.connectionError);
+      if (o.path == '/me') return jsonBody(meJson);
+      return jsonBody({}, 404);
+    });
+    final router = GoRouter(initialLocation: '/profile', routes: [
+      GoRoute(path: '/profile', builder: (_, _) => const ProfileScreen(key: Key('tab-profile'))),
+    ]);
+    await tester.pumpWidget(ProviderScope(
+      overrides: [
+        sessionStoreProvider.overrideWithValue(store),
+        httpAdapterProvider.overrideWithValue(adapter),
+        sellerListingsRepositoryProvider.overrideWithValue(FakeSellerListingsRepository()),
+        requestsRepositoryProvider.overrideWithValue(FakeRequestsRepository()),
+        notificationsRepositoryProvider.overrideWithValue(FakeNotificationsRepository()),
+      ],
+      child: MaterialApp.router(theme: buildAppTheme(), routerConfig: router),
+    ));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Réessayer'), findsOneWidget);
+    expect(find.text(networkMessage), findsOneWidget);
+    expect(find.text('Se connecter'), findsNothing);
+    expect(store.refresh, 'r', reason: 'tokens are kept while offline');
+
+    online = true;
+    await tester.tap(find.text('Réessayer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Awa Koné'), findsOneWidget);
+    expect(find.text('Réessayer'), findsNothing);
   });
 }

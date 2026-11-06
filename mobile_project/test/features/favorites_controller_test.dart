@@ -85,6 +85,55 @@ void main() {
     expect(cards.map((e) => e.id), ['l1', 'l3']);
   });
 
+  test('250 local favorites merge in two chunks (200 + 50), then local is cleared', () async {
+    final adapter = FakeAdapter((o) async {
+      if (o.path == '/me/favorites/merge') return jsonBody(null, 204);
+      return jsonBody(pageJson([]));
+    });
+    final ids = [for (var i = 0; i < 250; i++) 'l$i'];
+    final local = MemoryFavoritesStore([for (final id in ids) LocalFavorite(favoriteCard(id))]);
+    final c = makeContainer(adapter: adapter, session: FakeAuthSession(initial: signedInUser()), local: local);
+    await c.read(favoritesProvider.notifier).mergeLocalIntoAccount();
+
+    final merges = adapter.requests.where((r) => r.path == '/me/favorites/merge').toList();
+    expect(merges, hasLength(2));
+    List<dynamic> sent(RequestOptions r) =>
+        ((r.data is String ? jsonDecode(r.data as String) : r.data) as Map)['listingIds'] as List;
+    expect(sent(merges[0]), ids.sublist(0, 200));
+    expect(sent(merges[1]), ids.sublist(200));
+    expect(local.entries, isEmpty);
+  });
+
+  test('a failing second merge chunk keeps every local favorite', () async {
+    var merges = 0;
+    final adapter = FakeAdapter((o) async {
+      if (o.path == '/me/favorites/merge') return merges++ == 0 ? jsonBody(null, 204) : jsonBody({}, 500);
+      return jsonBody(pageJson([]));
+    });
+    final local = MemoryFavoritesStore([for (var i = 0; i < 250; i++) LocalFavorite(favoriteCard('l$i'))]);
+    final c = makeContainer(adapter: adapter, session: FakeAuthSession(initial: signedInUser()), local: local);
+    await expectLater(c.read(favoritesProvider.notifier).mergeLocalIntoAccount(), throwsA(isA<ApiError>()));
+    expect(merges, 2);
+    expect(local.entries, hasLength(250));
+  });
+
+  test('account unreachable at startup: favorites in error, nothing stored locally, recovers', () async {
+    final adapter = FakeAdapter((o) async => jsonBody(pageJson([favoriteCardJson('l1')])));
+    final local = MemoryFavoritesStore();
+    final session = OfflineSession();
+    final c = makeContainer(adapter: adapter, session: session, local: local);
+
+    await expectLater(c.read(favoritesProvider.future), throwsA(isA<ApiError>().having((e) => e.isNetwork, 'isNetwork', true)));
+    await expectLater(c.read(favoritesProvider.notifier).toggle(favoriteCard('l2')), throwsA(isA<ApiError>()));
+    expect(local.entries, isEmpty, reason: 'never falls back to the anonymous local list');
+
+    session.offline = false;
+    c.invalidate(sessionControllerProvider);
+    await c.read(sessionControllerProvider.future);
+    final cards = await c.read(favoritesProvider.future);
+    expect(cards.map((e) => e.id), ['l1']);
+  });
+
   test('mergeLocalIntoAccount failure keeps the local favorites', () async {
     final adapter = FakeAdapter((o) async => jsonBody({}, 500));
     final local = MemoryFavoritesStore([LocalFavorite(favoriteCard('l1'))]);

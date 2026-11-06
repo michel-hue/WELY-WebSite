@@ -31,6 +31,7 @@ Future<Harness> pumpRequests(
   Me? user,
   FakeRequestsRepository? repo,
   FakeUrlLauncher? launcher,
+  FakeAuthSession? session,
 }) async {
   tester.view.physicalSize = const Size(1080, 2400);
   tester.view.devicePixelRatio = 3;
@@ -39,7 +40,7 @@ Future<Harness> pumpRequests(
     repo ?? FakeRequestsRepository(),
     FakeSellerListingsRepository(),
     launcher ?? FakeUrlLauncher(),
-    FakeAuthSession(initial: user),
+    session ?? FakeAuthSession(initial: user),
   );
   final router = GoRouter(initialLocation: '/requests', routes: [
     GoRoute(path: '/requests', builder: (_, _) => const RequestsScreen(key: Key('tab-requests'))),
@@ -67,6 +68,20 @@ void main() {
     await tester.tap(find.text('Se connecter'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('login-sheet')), findsOneWidget);
+  });
+
+  testWidgets('account unreachable at startup: « Réessayer » (no « Se connecter »), then the list', (tester) async {
+    final session = OfflineSession();
+    final h = await pumpRequests(tester, session: session, repo: FakeRequestsRepository(sent: [sampleRequest()]));
+    expect(find.text('Réessayer'), findsOneWidget);
+    expect(find.text('Se connecter'), findsNothing);
+    expect(h.repo.mineCalls, 0);
+
+    session.offline = false;
+    await tester.tap(find.text('Réessayer'));
+    await tester.pumpAndSettle();
+    expect(find.text('Villa avec piscine'), findsOneWidget);
+    expect(find.text('Réessayer'), findsNothing);
   });
 
   testWidgets('buyer: « En attente » pill, « Annuler » calls cancel', (tester) async {

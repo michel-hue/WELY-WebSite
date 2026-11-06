@@ -7,6 +7,8 @@ import 'api_error.dart';
 
 const _retriedKey = 'auth_retried';
 
+typedef _Refresh = ({String? token, bool offline});
+
 /// Ajoute X-Installation-Id et le bearer ; sur 401, renouvelle la session une
 /// seule fois (même si plusieurs requêtes échouent en parallèle) puis rejoue.
 /// Toutes les erreurs ressortent en [DioException] dont `error` est un [ApiError].
@@ -25,7 +27,7 @@ class AuthInterceptor extends Interceptor {
   final SessionStore store;
   final void Function() onSessionExpired;
 
-  Completer<String?>? _refreshing;
+  Completer<_Refresh>? _refreshing;
 
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
@@ -52,7 +54,8 @@ class AuthInterceptor extends Interceptor {
         req.extra[_retriedKey] != true &&
         !req.path.startsWith('/auth/') &&
         ApiError.fromDio(err).code == 'UNAUTHORIZED') {
-      final token = await _freshAccessToken(usedBearer);
+      final fresh = await _freshAccessToken(usedBearer);
+      final token = fresh.token;
       if (token != null) {
         req.extra[_retriedKey] = true;
         try {
@@ -61,6 +64,8 @@ class AuthInterceptor extends Interceptor {
           return handler.reject(_wrap(e));
         }
       }
+      // Refresh injoignable : c'est le réseau qui manque, pas la connexion.
+      if (fresh.offline) return handler.reject(err.copyWith(error: const ApiError.network()));
     }
     handler.reject(_wrap(err));
   }
@@ -68,48 +73,49 @@ class AuthInterceptor extends Interceptor {
   DioException _wrap(DioException e) =>
       e.error is ApiError ? e : e.copyWith(error: ApiError.fromDio(e));
 
-  /// Retourne un access token valide, ou null si la session est perdue/indisponible.
-  Future<String?> _freshAccessToken(String staleBearer) async {
+  /// Retourne un access token valide, ou `token: null` si la session est
+  /// perdue/indisponible (`offline: true` : refresh sans réponse, session gardée).
+  Future<_Refresh> _freshAccessToken(String staleBearer) async {
     final inFlight = _refreshing;
     if (inFlight != null) return inFlight.future;
 
     // Une autre requête a peut-être déjà renouvelé le jeton depuis l'envoi de celle-ci.
     final current = await store.readAccess();
-    if (current != null && 'Bearer $current' != staleBearer) return current;
+    if (current != null && 'Bearer $current' != staleBearer) return (token: current, offline: false);
 
     // Re-vérifie après l'await : un refresh a pu démarrer entre-temps.
     if (_refreshing != null) return _refreshing!.future;
-    final completer = _refreshing = Completer<String?>();
+    final completer = _refreshing = Completer<_Refresh>();
     try {
       completer.complete(await _doRefresh());
     } catch (_) {
-      completer.complete(null);
+      completer.complete((token: null, offline: false));
     } finally {
       _refreshing = null;
     }
     return completer.future;
   }
 
-  Future<String?> _doRefresh() async {
+  Future<_Refresh> _doRefresh() async {
     final refresh = await store.readRefresh();
     if (refresh == null) {
       await store.clear();
       onSessionExpired();
-      return null;
+      return (token: null, offline: false);
     }
     try {
       final res = await refreshDio.post<Map<String, dynamic>>('/auth/refresh', data: {'refreshToken': refresh});
       final data = res.data!;
       final access = data['accessToken'] as String;
       await store.save(access: access, refresh: data['refreshToken'] as String);
-      return access;
+      return (token: access, offline: false);
     } on DioException catch (e) {
       // 401 = jeton de rafraîchissement invalide -> session perdue ; réseau, 429, 5xx : on la garde.
       if (e.response?.statusCode == 401) {
         await store.clear();
         onSessionExpired();
       }
-      return null;
+      return (token: null, offline: e.response == null);
     }
   }
 }

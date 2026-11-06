@@ -15,7 +15,7 @@ import '../../core/session/session_controller.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/serif_title.dart';
 import '../explore/explore_controller.dart';
-import '../explore/map_view.dart' show cartoPositronUrl, tileProviderOverrideProvider;
+import '../explore/map_view.dart' show cartoPositronUrl, mapAttribution, tileProviderOverrideProvider;
 import '../favorites/favorite_button.dart';
 import '../favorites/favorites_controller.dart';
 import '../listings/listings_repository.dart';
@@ -549,6 +549,13 @@ class _SmallMap extends ConsumerWidget {
                   ),
                 ),
               ]),
+              const Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: EdgeInsets.all(6),
+                  child: Text(mapAttribution, style: TextStyle(fontSize: 9, color: WellyColors.muted)),
+                ),
+              ),
             ],
           ),
         ),

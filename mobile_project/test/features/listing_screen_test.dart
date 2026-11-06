@@ -134,6 +134,11 @@ void main() {
     expect(find.text('Faire une demande'), findsOneWidget);
   });
 
+  testWidgets('small map credits OpenStreetMap and CARTO', (tester) async {
+    await pumpListing(tester, FakeDetailRepository());
+    expect(find.text('© OpenStreetMap © CARTO', skipOffstage: false), findsOneWidget);
+  });
+
   testWidgets('« À la nuit » chip switches the price line', (tester) async {
     await pumpListing(tester, FakeDetailRepository());
 

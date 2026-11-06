@@ -20,8 +20,12 @@ class FavoritesController extends AsyncNotifier<List<ListingCard>> {
     String? userId;
     try {
       userId = await ref.watch(sessionControllerProvider.selectAsync((me) => me?.id));
-    } catch (_) {
-      userId = null; // Session illisible : on reste en anonyme.
+    } catch (e) {
+      // Compte injoignable (hors ligne) : erreur avec « Réessayer », surtout pas
+      // les favoris locaux (un ajout s'y perdrait). Autre erreur : anonyme.
+      final err = ApiError.of(e);
+      if (err.isNetwork) throw err;
+      userId = null;
     }
     _signedIn = userId != null;
     _unavailable = {};
@@ -95,7 +99,11 @@ class FavoritesController extends AsyncNotifier<List<ListingCard>> {
   Future<void> mergeLocalIntoAccount() async {
     final entries = await _local.read();
     if (entries.isNotEmpty) {
-      await _remote.merge([for (final e in entries) e.card.id]);
+      final ids = [for (final e in entries) e.card.id];
+      // Par paquets (limite de l'API) ; on ne vide qu'après le dernier succès.
+      for (var i = 0; i < ids.length; i += FavoritesRepository.mergeLimit) {
+        await _remote.merge(ids.sublist(i, (i + FavoritesRepository.mergeLimit).clamp(0, ids.length)));
+      }
       await _local.clear();
     }
     ref.invalidateSelf();

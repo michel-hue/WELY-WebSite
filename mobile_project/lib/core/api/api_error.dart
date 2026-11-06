@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/misc.dart' show ProviderException;
 
 class FieldError {
   const FieldError(this.field, this.message);
@@ -56,6 +57,8 @@ class ApiError implements Exception {
   /// Convertit n'importe quelle erreur levée par le client en [ApiError].
   static ApiError of(Object e) {
     if (e is ApiError) return e;
+    // Erreur relayée par un provider dont on dépend (ex. session injoignable).
+    if (e is ProviderException) return of(e.exception);
     if (e is DioException) {
       final inner = e.error;
       if (inner is ApiError) return inner;

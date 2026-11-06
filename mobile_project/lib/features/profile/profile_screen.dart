@@ -6,6 +6,7 @@ import '../../core/api/api_error.dart';
 import '../../core/config.dart';
 import '../../core/phone.dart';
 import '../../core/session/session_controller.dart';
+import '../../core/session/session_unreachable.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/serif_title.dart';
 import '../../core/widgets/welly_logo.dart';
@@ -126,6 +127,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final Widget body;
     if (session.isLoading && !session.hasValue) {
       body = const Center(child: CircularProgressIndicator(color: WellyColors.laiton));
+    } else if (sessionUnreachable(session)) {
+      body = const Center(child: SingleChildScrollView(child: SessionUnreachableMessage()));
     } else if (me == null) {
       body = _Anonymous(onLogin: () => showLoginSheet(context), onPropose: _proposeListing);
     } else {

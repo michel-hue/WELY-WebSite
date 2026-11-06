@@ -67,3 +67,16 @@ const nameMissing = ApiError(
   message: 'Certaines informations sont invalides.',
   details: [FieldError('name', 'Indiquez votre nom (2 caractères minimum).')],
 );
+
+/// Compte injoignable (réseau, jetons gardés) tant que [offline], puis
+/// connecté en [signedInUser].
+class OfflineSession extends FakeAuthSession {
+  OfflineSession() : super(initial: signedInUser());
+  bool offline = true;
+
+  @override
+  Future<Me?> build() async {
+    if (offline) throw const ApiError.network();
+    return initial;
+  }
+}

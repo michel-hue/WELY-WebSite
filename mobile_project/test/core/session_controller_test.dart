@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_project/core/api/api_client.dart';
+import 'package:mobile_project/core/api/api_error.dart';
 import 'package:mobile_project/core/installation_id.dart';
 import 'package:mobile_project/core/session/session_controller.dart';
 import 'package:mobile_project/core/session/session_store.dart';
@@ -45,6 +47,41 @@ void main() {
     expect(await c.read(sessionControllerProvider.future), isNull);
     expect(store.access, isNull);
     expect(store.refresh, isNull);
+  });
+
+  test('startup network failure keeps tokens: error state, then « Réessayer » restores the user', () async {
+    final store = MemorySessionStore(access: 'a', refresh: 'r');
+    var online = false;
+    final adapter = FakeAdapter((o) async {
+      if (!online) throw DioException(requestOptions: o, type: DioExceptionType.connectionError);
+      if (o.path == '/me') return jsonBody(meJson);
+      return jsonBody({}, 404);
+    });
+    final c = makeContainer(adapter, store);
+    final sub = c.listen(sessionControllerProvider, (_, _) {});
+    addTearDown(sub.close);
+    await expectLater(c.read(sessionControllerProvider.future), throwsA(isA<ApiError>().having((e) => e.isNetwork, 'isNetwork', true)));
+    final state = c.read(sessionControllerProvider);
+    expect(sessionUnreachable(state), isTrue);
+    expect(store.access, 'a');
+    expect(store.refresh, 'r');
+
+    online = true;
+    c.invalidate(sessionControllerProvider);
+    expect((await c.read(sessionControllerProvider.future))?.id, 'u1');
+    expect(sessionUnreachable(c.read(sessionControllerProvider)), isFalse);
+  });
+
+  test('startup 401 then refresh unreachable: error state, tokens kept (not anonymous)', () async {
+    final store = MemorySessionStore(access: 'old', refresh: 'r1');
+    final adapter = FakeAdapter((o) async {
+      if (o.path == '/auth/refresh') throw DioException(requestOptions: o, type: DioExceptionType.connectionError);
+      return jsonBody({'error': {'code': 'UNAUTHORIZED', 'message': 'Connexion requise.'}}, 401);
+    });
+    final c = makeContainer(adapter, store);
+    await expectLater(c.read(sessionControllerProvider.future), throwsA(isA<ApiError>()));
+    expect(sessionUnreachable(c.read(sessionControllerProvider)), isTrue);
+    expect(store.refresh, 'r1');
   });
 
   test('mid-session expiry (refresh refused) moves state from Me to null', () async {

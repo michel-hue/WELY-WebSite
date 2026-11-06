@@ -122,15 +122,22 @@ void main() {
     expect(expired, 0);
   });
 
-  test('network failure during refresh keeps the session', () async {
+  test('network failure during refresh keeps the session and surfaces a network error', () async {
     final store = MemorySessionStore(access: 'old', refresh: 'r1');
+    var expired = 0;
     final adapter = FakeAdapter((o) async {
       if (o.path == '/auth/refresh') throw DioException(requestOptions: o, type: DioExceptionType.connectionError);
       return unauthorized();
     });
-    final err = await errorOf(makeDio(adapter, store).get('/a'));
-    expect(err.status, 401);
+    final dio = makeDio(adapter, store, onExpired: () => expired++);
+    final errors = await Future.wait([errorOf(dio.get('/a')), errorOf(dio.get('/b'))]);
+    for (final err in errors) {
+      expect(err.isNetwork, isTrue);
+      expect(err.message, networkMessage);
+    }
+    expect(adapter.count('POST', '/auth/refresh'), 1);
     expect(store.refresh, 'r1');
     expect(store.access, 'old');
+    expect(expired, 0);
   });
 }

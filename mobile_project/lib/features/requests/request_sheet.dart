@@ -5,6 +5,7 @@ import '../../core/api/api_error.dart';
 import '../../core/format.dart';
 import '../../core/labels.dart';
 import '../../core/session/session_controller.dart';
+import '../../core/session/session_unreachable.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/serif_title.dart';
 import '../../core/widgets/soft_banner.dart';
@@ -198,7 +199,9 @@ class _RequestSheetState extends ConsumerState<RequestSheet> {
       }
     });
     final session = ref.watch(sessionControllerProvider);
-    if (_anonymous == null && !session.isLoading) _anonymous = session.value == null;
+    // Compte injoignable (hors ligne) : « Réessayer », pas de nouveau code SMS.
+    final unreachable = _anonymous == null && sessionUnreachable(session);
+    if (_anonymous == null && !session.isLoading && !unreachable) _anonymous = session.value == null;
 
     final offer = _offer;
     return Padding(
@@ -219,6 +222,8 @@ class _RequestSheetState extends ConsumerState<RequestSheet> {
             const SizedBox(height: 14),
             if (offer == null)
               const Text('Aucune offre n’est proposée pour ce logement.', style: TextStyle(fontWeight: FontWeight.w300))
+            else if (unreachable)
+              const SessionUnreachableMessage()
             else if (_anonymous == null)
               const Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()))
             else

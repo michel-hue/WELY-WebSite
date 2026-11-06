@@ -38,7 +38,8 @@ class Me {
 
 typedef OtpRequestResult = ({int expiresInSeconds, bool isNewUser});
 
-/// Session utilisateur : `null` = anonyme. Les méthodes lèvent [ApiError].
+/// Session utilisateur : `null` = anonyme ; en erreur ([ApiError] réseau) =
+/// jetons gardés mais compte injoignable. Les méthodes lèvent [ApiError].
 class SessionController extends AsyncNotifier<Me?> {
   Dio get _dio => ref.read(dioProvider);
   SessionStore get _store => ref.read(sessionStoreProvider);
@@ -48,11 +49,17 @@ class SessionController extends AsyncNotifier<Me?> {
     // Refresh refusé quelque part dans l'app -> retour en anonyme.
     ref.listen(sessionExpiredProvider, (_, _) => state = const AsyncData(null));
 
-    if (await _store.readRefresh() == null && await _store.readAccess() == null) return null;
+    try {
+      if (await _store.readRefresh() == null && await _store.readAccess() == null) return null;
+    } catch (_) {
+      return null; // Stockage illisible : anonyme.
+    }
     try {
       return await _fetchMe();
-    } on ApiError {
-      // Réseau : on garde les jetons pour réessayer plus tard ; sinon anonyme.
+    } on ApiError catch (e) {
+      // Réseau : la session passe en erreur en gardant ses jetons ; Profil et
+      // Demandes proposent « Réessayer » (ref.invalidate). Sinon : anonyme.
+      if (e.isNetwork) rethrow;
       return null;
     }
   }
@@ -135,4 +142,13 @@ class SessionController extends AsyncNotifier<Me?> {
   }
 }
 
-final sessionControllerProvider = AsyncNotifierProvider<SessionController, Me?>(SessionController.new);
+final sessionControllerProvider = AsyncNotifierProvider<SessionController, Me?>(
+  SessionController.new,
+  // Pas de nouvel essai automatique : Profil / Demandes proposent « Réessayer ».
+  retry: (_, _) => null,
+);
+
+/// Compte injoignable au démarrage (réseau) : à afficher en erreur douce
+/// avec « Réessayer » plutôt qu'en anonyme.
+bool sessionUnreachable(AsyncValue<Me?> session) =>
+    session.hasError && !session.isLoading && ApiError.of(session.error!).isNetwork;

@@ -108,12 +108,13 @@ Future<Harness> openSheet(
   ListingDetail? listing,
   OfferType offer = OfferType.nightly,
   bool favoritesFail = false,
+  FakeAuthSession? session,
 }) async {
   tester.view.physicalSize = const Size(1080, 2400);
   tester.view.devicePixelRatio = 3;
   addTearDown(tester.view.reset);
   final log = <String>[];
-  final h = Harness(FakeAuthSession(initial: user, log: log), FakeRequestsRepository(log), FakePickers(), log);
+  final h = Harness(session ?? FakeAuthSession(initial: user, log: log), FakeRequestsRepository(log), FakePickers(), log);
   await tester.pumpWidget(ProviderScope(
     overrides: [
       sessionControllerProvider.overrideWith(() => h.session),
@@ -230,6 +231,20 @@ void main() {
     await tester.pumpAndSettle();
     expect(h.repo.calls, hasLength(1));
     expect(find.byKey(const Key('request-sheet')), findsNothing);
+  });
+
+  testWidgets('account unreachable: « Réessayer » instead of a new SMS code, then the signed-in form', (tester) async {
+    final session = OfflineSession();
+    await openSheet(tester, session: session);
+    expect(find.text('Réessayer'), findsOneWidget);
+    expect(find.byKey(const Key('otp-phone')), findsNothing);
+
+    session.offline = false;
+    await tester.tap(find.text('Réessayer'));
+    await tester.pumpAndSettle();
+    expect(find.text('Réessayer'), findsNothing);
+    expect(find.byKey(const Key('otp-phone')), findsNothing);
+    expect(find.byKey(const Key('request-submit')), findsOneWidget);
   });
 
   testWidgets('signed in: no phone/code fields, create directly', (tester) async {

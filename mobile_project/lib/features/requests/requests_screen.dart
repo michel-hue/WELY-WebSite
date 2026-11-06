@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/api/api_error.dart';
 import '../../core/contact.dart';
 import '../../core/session/session_controller.dart';
+import '../../core/session/session_unreachable.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/calm_message.dart';
 import '../../core/widgets/serif_title.dart';
@@ -56,6 +57,8 @@ class _RequestsScreenState extends ConsumerState<RequestsScreen> {
     final Widget body;
     if (session.isLoading && !session.hasValue) {
       body = const Center(child: CircularProgressIndicator(color: WellyColors.laiton));
+    } else if (sessionUnreachable(session)) {
+      body = const SingleChildScrollView(child: SessionUnreachableMessage());
     } else if (me == null) {
       body = SingleChildScrollView(
         child: CalmMessage(
