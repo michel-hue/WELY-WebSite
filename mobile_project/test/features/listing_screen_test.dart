@@ -14,9 +14,11 @@ import 'package:mobile_project/features/listing/listing_screen.dart';
 import 'package:mobile_project/features/listings/listings_repository.dart';
 import 'package:mobile_project/features/listings/models.dart' hide Page;
 import 'package:mobile_project/features/seller/manage_listing_screen.dart';
+import 'package:mobile_project/features/seller/seller_listings_repository.dart';
 
 import '../helpers/fake_explore.dart';
 import '../helpers/fake_launcher.dart';
+import '../helpers/fake_seller.dart';
 
 ListingDetail sampleDetail({String sellerId = 's1', String? phone = '+2250700000001', String? whatsapp}) => ListingDetail(
       id: '1',
@@ -105,6 +107,8 @@ Future<void> pumpListing(
       urlLauncherProvider.overrideWithValue(launcher ?? FakeUrlLauncher()),
       sessionControllerProvider.overrideWith(() => FakeSession(user)),
       tileProviderOverrideProvider.overrideWithValue(BlankTileProvider()),
+      // Écran « Gérer » ouvert depuis la fiche : aucun appel réseau réel.
+      sellerListingsRepositoryProvider.overrideWithValue(FakeEditorRepository(existing: editorListing())),
     ],
     child: MaterialApp.router(theme: buildAppTheme(), routerConfig: router),
   ));

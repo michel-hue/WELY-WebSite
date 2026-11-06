@@ -8,7 +8,7 @@ import '../features/listing/listing_screen.dart';
 import '../features/notifications/notifications_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/requests/requests_screen.dart';
-import '../features/seller/listing_editor_screen.dart';
+import '../features/seller/editor/editor_screen.dart';
 import '../features/seller/manage_listing_screen.dart';
 import 'shell/home_shell.dart';
 
@@ -61,6 +61,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/seller/listings/:id',
         builder: (_, state) => ManageListingScreen(id: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/seller/listings/:id/edit',
+        builder: (_, state) => ListingEditorScreen(id: state.pathParameters['id']!),
       ),
     ],
   );

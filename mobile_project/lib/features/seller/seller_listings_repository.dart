@@ -74,7 +74,9 @@ class SellerListingsRepository {
   Future<void> remove(String id) => _guard(() => _dio.delete<void>('/listings/$id'));
 
   /// Envoie les photos (par lots de [photosPerUpload]) ; renvoie les photos créées.
-  Future<List<Photo>> uploadPhotos(String id, List<XFile> files) => _guard(() async {
+  /// [onProgress] reçoit les octets envoyés du lot en cours.
+  Future<List<Photo>> uploadPhotos(String id, List<XFile> files, {ProgressCallback? onProgress}) =>
+      _guard(() async {
         final created = <Photo>[];
         for (var i = 0; i < files.length; i += photosPerUpload) {
           final batch = files.sublist(i, (i + photosPerUpload).clamp(0, files.length));
@@ -85,7 +87,7 @@ class SellerListingsRepository {
               MultipartFile.fromBytes(await f.readAsBytes(), filename: f.name, contentType: DioMediaType.parse(_mimeOf(f))),
             ));
           }
-          final res = await _dio.post<List<dynamic>>('/listings/$id/photos', data: form);
+          final res = await _dio.post<List<dynamic>>('/listings/$id/photos', data: form, onSendProgress: onProgress);
           created.addAll([for (final j in res.data ?? const []) Photo.fromJson((j as Map).cast<String, dynamic>())]);
         }
         return created;

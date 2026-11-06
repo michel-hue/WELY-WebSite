@@ -10,6 +10,10 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>WELLY utilise votre position pour vous montrer les logements autour de vous. Elle n’est jamais partagée avec les vendeurs.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>WELLY accède à vos photos pour illustrer vos annonces.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>WELLY utilise l’appareil photo pour photographier vos logements.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

@@ -12,6 +12,7 @@ import '../../core/widgets/calm_message.dart';
 import '../../core/widgets/serif_title.dart';
 import '../requests/models.dart';
 import '../requests/requests_repository.dart';
+import '../seller/publication_end_dialog.dart';
 import '../seller/seller_listings_repository.dart';
 
 Future<String?> _currentUserId(Ref ref) async {
@@ -125,21 +126,9 @@ class _SellerSpaceState extends ConsumerState<SellerSpace> {
   }
 
   Future<void> _reactivate(SellerListing l) async {
-    final choice = await showDialog<_Until>(context: context, builder: (_) => const _ReactivateDialog());
-    if (choice == null || !mounted) return;
-    String? until;
-    if (choice == _Until.date) {
-      final now = DateTime.now();
-      final picked = await showDatePicker(
-        context: context,
-        initialDate: now.add(const Duration(days: 30)),
-        firstDate: now,
-        lastDate: now.add(const Duration(days: 365)),
-        helpText: 'En ligne jusqu’au',
-      );
-      if (picked == null || !mounted) return;
-      until = isoDay(picked);
-    }
+    final end = await askPublicationEnd(context);
+    if (end == null || !mounted) return;
+    final until = end.until == null ? null : isoDay(end.until!);
     final ctrl = ref.read(myListingsProvider.notifier);
     setState(() => _busy.add(l.id));
     try {
@@ -393,33 +382,4 @@ class SellerListingRow extends StatelessWidget {
       ),
     );
   }
-}
-
-enum _Until { permanent, date }
-
-class _ReactivateDialog extends StatelessWidget {
-  const _ReactivateDialog();
-
-  @override
-  Widget build(BuildContext context) => SimpleDialog(
-        backgroundColor: WellyColors.ivoire,
-        title: const Text('Remettre en ligne'),
-        children: [
-          SimpleDialogOption(
-            onPressed: () => Navigator.of(context).pop(_Until.permanent),
-            child: const Padding(padding: EdgeInsets.symmetric(vertical: 6), child: Text('Sans date de fin')),
-          ),
-          SimpleDialogOption(
-            onPressed: () => Navigator.of(context).pop(_Until.date),
-            child: const Padding(padding: EdgeInsets.symmetric(vertical: 6), child: Text('Jusqu’à une date…')),
-          ),
-          SimpleDialogOption(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 6),
-              child: Text('Annuler', style: TextStyle(color: WellyColors.muted)),
-            ),
-          ),
-        ],
-      );
 }
