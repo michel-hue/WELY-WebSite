@@ -1,0 +1,128 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  .m-wrap{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+  .m-col{display:flex;flex-direction:column;align-items:center;gap:12px}
+  .m-cap{max-width:290px;text-align:center;font-size:13px;line-height:1.45}
+  .m-cap b{display:block;font-size:15px;margin-bottom:2px}
+  .phone{width:290px;height:620px;border-radius:38px;background:#F6F3EE;border:8px solid #1b1e24;overflow:hidden;position:relative;
+    font-family:Inter,system-ui,sans-serif;font-weight:300;color:#13161B;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+  .phone *{box-sizing:border-box}
+  .sb{position:absolute;top:0;left:0;right:0;z-index:5;height:30px;display:flex;justify-content:space-between;align-items:center;padding:0 22px;font-size:11px;font-weight:500}
+  .serif{font-family:"Instrument Serif",serif;font-style:italic;font-weight:400}
+  .muted{color:#6B6F76}
+  .laiton{color:#9C7F3C}
+  .rb{position:absolute;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.94);display:grid;place-items:center;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.12)}
+  .pill{font-size:10.5px;padding:5px 10px;border-radius:999px;background:#fff;border:1px solid #E6E0D6;display:inline-block}
+  .pill.l{background:#F3EBDA;border-color:#E8DABB;color:#7d6530;font-weight:500}
+  .fact{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;flex:1;padding:9px 0;background:#fff;border-radius:14px;border:1px solid #EEE8DE}
+  .fact b{font-size:13px;font-weight:500}
+  .seller{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #EEE8DE;border-radius:16px;padding:10px 12px}
+  .av{width:36px;height:36px;border-radius:50%;background:#13161B;color:#F6F3EE;display:grid;place-items:center;font-size:13px}
+  .bar{position:absolute;left:0;right:0;bottom:0;padding:12px 14px 20px;background:#fff;border-top:1px solid #EEE8DE;display:flex;gap:8px;align-items:center}
+  .btn{flex:1;text-align:center;padding:12px 10px;border-radius:999px;font-size:12px;font-weight:500}
+  .btn.dark{background:#13161B;color:#F6F3EE}
+  .btn.wa{background:#fff;border:1px solid #CFE7D6;color:#1f7a45}
+  .scrim{position:absolute;inset:0;background:rgba(19,22,27,.38)}
+  .modal{position:absolute;left:0;right:0;bottom:0;background:#F6F3EE;border-radius:26px 26px 0 0;padding:10px 18px 22px}
+  .grab{width:38px;height:4px;border-radius:4px;background:#D8D1C5;margin:0 auto 12px}
+  .field{background:#fff;border:1px solid #E6E0D6;border-radius:14px;padding:9px 12px;margin-bottom:8px}
+  .field small{display:block;font-size:9.5px;color:#6B6F76;letter-spacing:.04em}
+  .field span{font-size:12.5px}
+  .otp{display:flex;gap:6px;margin:6px 0 4px}
+  .otp i{flex:1;height:40px;border-radius:12px;background:#fff;border:1px solid #E6E0D6;display:grid;place-items:center;font-style:normal;font-size:16px;font-weight:500}
+  .otp i.on{border-color:#C2A25F;box-shadow:0 0 0 3px rgba(194,162,95,.18)}
+  .tabs{position:absolute;bottom:0;left:0;right:0;height:60px;background:rgba(255,255,255,.97);border-top:1px solid #EEE8DE;display:flex;justify-content:space-around;align-items:center;font-size:10px}
+  .tabs div{display:flex;flex-direction:column;align-items:center;gap:3px;color:#8A8E95}
+  .tabs .on{color:#13161B;font-weight:500}
+  .tabs .on i{background:#C2A25F}
+  .tabs i{width:18px;height:18px;border-radius:6px;background:#E3DED5;display:block}
+  .stat{flex:1;background:#fff;border:1px solid #EEE8DE;border-radius:16px;padding:10px 12px}
+  .stat b{display:block;font-size:20px;font-weight:400}
+  .stat span{font-size:10px}
+  .lrow{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid #EEE8DE;border-radius:16px;padding:8px;margin-bottom:8px}
+  .lrow .th{width:54px;height:54px;border-radius:12px;background-size:cover;background-position:center;flex:none}
+  .st{font-size:9.5px;padding:3px 8px;border-radius:999px;font-weight:500}
+  .st.on{background:#E3F1E7;color:#1f7a45}
+  .st.exp{background:#F6E7D8;color:#9a5a1c}
+  .st.cl{background:#ECEAE6;color:#6B6F76}
+  .t{font-size:12.5px;font-weight:400}
+  .s{font-size:10.5px;margin-top:2px}
+</style>
+
+<h2>Écrans clés — dans le style C3</h2>
+<p class="subtitle">La fiche d'un logement, la demande (qui crée le compte au passage) et l'espace vendeur. Dis-moi ce qui te va ou ce qu'il faut changer.</p>
+
+<div class="m-wrap">
+
+  <!-- Fiche -->
+  <div class="m-col">
+    <div class="phone">
+      <div class="sb" style="color:#fff"><span>9:41</span><span>●●● ▮</span></div>
+      <div style="height:270px;background:url(/files/villa-piscine.webp) center/cover;position:relative">
+        <span class="rb" style="left:14px;top:38px">‹</span>
+        <span class="rb" style="right:56px;top:38px">⇪</span>
+        <span class="rb" style="right:14px;top:38px">♡</span>
+        <span style="position:absolute;right:14px;bottom:30px;font-size:10px;color:#fff;background:rgba(19,22,27,.5);padding:4px 9px;border-radius:999px">1 / 8</span>
+      </div>
+      <div style="position:absolute;top:250px;left:0;right:0;bottom:0;background:#F6F3EE;border-radius:24px 24px 0 0;padding:16px 16px 0">
+        <div style="display:flex;gap:6px;margin-bottom:8px"><span class="pill l">Au mois</span><span class="pill">À la nuit</span></div>
+        <div style="font-size:22px;line-height:1.1">Villa avec <span class="serif">piscine</span></div>
+        <div class="s muted" style="margin:4px 0 10px">Riviera 3, Cocody · à 1,2 km</div>
+        <div style="font-size:16px;font-weight:500;margin-bottom:12px">650 000 F <span class="muted" style="font-size:11px;font-weight:300">/ mois</span></div>
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <div class="fact"><b>4</b>pièces</div><div class="fact"><b>3</b>chambres</div><div class="fact"><b>180</b>m²</div><div class="fact"><b>✓</b>meublé</div>
+        </div>
+        <div class="seller"><div class="av">K</div><div><div class="t">Koffi A.</div><div class="s muted">Propriétaire · répond vite</div></div><span class="muted" style="margin-left:auto;font-size:10px">Signaler</span></div>
+      </div>
+      <div class="bar"><div class="btn wa">WhatsApp</div><div class="btn dark">Faire une demande</div></div>
+    </div>
+    <div class="m-cap"><b>1 · Fiche du logement</b><span class="muted">Grandes photos, offres disponibles, infos clés et le vendeur. En bas, toujours visibles : WhatsApp et « Faire une demande ».</span></div>
+  </div>
+
+  <!-- Demande -->
+  <div class="m-col">
+    <div class="phone">
+      <div class="sb" style="color:#fff"><span>9:41</span><span>●●● ▮</span></div>
+      <div style="height:270px;background:url(/files/villa-piscine.webp) center/cover"></div>
+      <div class="scrim"></div>
+      <div class="modal">
+        <div class="grab"></div>
+        <div style="font-size:21px;line-height:1.1;margin-bottom:4px">Votre <span class="serif laiton">demande</span></div>
+        <div class="s muted" style="margin-bottom:12px">Pas de mot de passe : un code par SMS suffit.</div>
+        <div style="display:flex;gap:6px;margin-bottom:8px"><span class="pill l">Au mois</span><span class="pill">À la nuit</span></div>
+        <div class="field"><small>VOTRE NOM</small><span>Awa Traoré</span></div>
+        <div class="field"><small>TÉLÉPHONE</small><span>+225 07 12 34 56 78</span></div>
+        <div class="field"><small>ENTRÉE SOUHAITÉE</small><span>1er décembre</span></div>
+        <div class="s muted" style="margin-top:4px">Code reçu par SMS</div>
+        <div class="otp"><i>4</i><i>8</i><i>1</i><i class="on"></i><i></i><i></i></div>
+        <div class="btn dark" style="margin-top:10px;display:block">Envoyer ma demande</div>
+      </div>
+    </div>
+    <div class="m-cap"><b>2 · Faire une demande</b><span class="muted">Un panneau qui monte du bas : nom, téléphone, dates, puis le code SMS. Le compte est créé à ce moment-là, sans autre étape.</span></div>
+  </div>
+
+  <!-- Vendeur -->
+  <div class="m-col">
+    <div class="phone">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div style="position:absolute;top:38px;left:16px;right:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="seg" style="display:flex;background:#fff;border:1px solid #E6E0D6;border-radius:999px;padding:3px;font-size:11px"><span style="padding:6px 12px">Acheteur</span><span style="padding:6px 12px;border-radius:999px;background:#13161B;color:#F6F3EE">Vendeur</span></div>
+          <span style="width:34px;height:34px;border-radius:50%;background:#C2A25F;display:grid;place-items:center;font-size:18px">+</span>
+        </div>
+        <div style="font-size:22px;line-height:1.1;margin-bottom:12px">Mes <span class="serif laiton">annonces</span></div>
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <div class="stat"><b>3</b><span class="muted">demandes en attente</span></div>
+          <div class="stat"><b>142</b><span class="muted">vues cette semaine</span></div>
+        </div>
+        <div class="lrow"><div class="th" style="background-image:url(/files/villa-piscine.webp)"></div><div style="flex:1"><div class="t">Villa avec piscine</div><div class="s muted">Jusqu'au 30 nov. · 2 demandes</div></div><span class="st on">En ligne</span></div>
+        <div class="lrow"><div class="th" style="background-image:url(/files/appartement-lumineux.webp)"></div><div style="flex:1"><div class="t">Studio lumineux</div><div class="s laiton">Expirée · Réactiver ›</div></div><span class="st exp">Expirée</span></div>
+        <div class="lrow"><div class="th" style="background-image:url(/files/chambre.webp)"></div><div style="flex:1"><div class="t">Appartement 2 pièces</div><div class="s muted">Loué le 2 nov.</div></div><span class="st cl">Clos</span></div>
+      </div>
+      <div class="tabs"><div><i></i>Explorer</div><div><i></i>Favoris</div><div><i></i>Demandes</div><div class="on"><i></i>Profil</div></div>
+    </div>
+    <div class="m-cap"><b>3 · Espace vendeur</b><span class="muted">Un bouton Acheteur / Vendeur pour basculer. Les annonces avec leur état (en ligne, expirée, close), réactiver en un toucher, et le « + » pour publier.</span></div>
+  </div>
+
+</div>

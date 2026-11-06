@@ -6,7 +6,7 @@ One repo holds three mostly independent parts:
 
 - **`dev-project/`** — the active Nuxt 4 app (WELY marketing site: index, about, contact, login, register). Has its own `package.json` and lockfile; it is not a workspace. Run all npm commands from inside `dev-project/`.
 - **`assets/scss/`** — shared SCSS partials at the **repo root**, outside the Nuxt app (see quirk below). `assets/css/main.css` is a compiled artifact of `main.scss` from a pre-Nuxt version of the site; nothing references it — treat the `.scss` partials as the source of truth and don't hand-edit the CSS.
-- **`mobile_project/`** — a near-default Flutter starter app (`lib/main.dart` only). Currently **untracked in git** (`git status` shows `?? mobile_project/`); changing that is a decision for the user.
+- **`mobile_project/`** — the WELLY Flutter app (Riverpod, go_router, dio), tracked in git on the `mobile-refonte` branch. `lib/core/` = theme, API/session, router, shared widgets, push; `lib/features/*` = auth, explore, listing(s), favorites, requests, profile, seller, notifications. Light theme only, French UI.
 
 ## Key quirk: Nuxt components import SCSS from the repo root
 
@@ -46,7 +46,23 @@ To recompile root CSS (only needed if touching `main.scss`):
 npx sass assets/scss/main.scss assets/css/main.css
 ```
 
-Flutter (only if working on `mobile_project/`): `flutter pub get`, `flutter run`, `flutter analyze` (uses `flutter_lints` via `analysis_options.yaml`).
+API (`api_project/`, NestJS 12 ESM + TypeORM + PostgreSQL/PostGIS on Neon) — see `api_project/README.md`:
+
+```bash
+cd api_project
+npm run start:dev      # migrations run automatically on boot; /docs = Swagger
+npm test               # unit (Vitest + SWC)
+npm run test:e2e       # e2e against a real DB: .env DATABASE_URL, isolated schema welly_test (~10 min on Neon)
+npm run typecheck && npm run lint
+```
+
+- Schema changes = hand-written SQL migrations in `src/database/migrations/` (no `synchronize`); columns are snake_case (custom naming strategy), properties camelCase.
+- Extensions (postgis, btree_gist, unaccent, pg_trgm, pgcrypto) live in `public`; `DATABASE_SCHEMA` lets tests use their own schema with `search_path=<schema>,public`.
+- Errors always go through `AppError` → `{ error: { code, message } }` (French messages). Paginated lists use keyset cursors compared at millisecond precision (`date_trunc('milliseconds', …)`).
+- External services sit behind interfaces with dev defaults: `OTP_SENDER` (console), `PUSH_SENDER` (log), `STORAGE` (local `/media`). e2e tests override OTP with `InMemoryOtpSender`.
+- Docker/WSL is not available on the dev machine; `docker-compose.yml` exists for machines that have it.
+
+Flutter (`mobile_project/`, run from inside it): `flutter pub get`, `flutter analyze` (must be clean), `flutter test`, `flutter run --dart-define=API_URL=http://<host>:3000/v1` (default `10.0.2.2` on Android emulator, `localhost` elsewhere). Push (Firebase) is optional: without `google-services.json` / `GoogleService-Info.plist` the app falls back to a no-op push service. Icons/splash: `flutter test tool/render_branding_test.dart` then `dart run flutter_launcher_icons` and `dart run flutter_native_splash:create`. CI runs analyze + test in the `mobile` job.
 
 ## Git gotchas
 

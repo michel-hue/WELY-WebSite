@@ -1,0 +1,150 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  .m-wrap{display:flex;gap:28px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+  .m-col{display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer}
+  .m-col.selected .phone{outline:3px solid #C2A25F;outline-offset:4px}
+  .m-cap{max-width:300px;text-align:center;font-size:13px;line-height:1.45}
+  .m-cap b{display:block;font-size:15px;margin-bottom:2px}
+  .phone{width:300px;height:640px;border-radius:38px;background:#F6F3EE;border:8px solid #1b1e24;overflow:hidden;position:relative;
+    font-family:Inter,system-ui,sans-serif;font-weight:300;color:#13161B;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+  .phone *{box-sizing:border-box}
+  .sb{height:30px;display:flex;justify-content:space-between;align-items:center;padding:0 22px;font-size:11px;font-weight:500}
+  .scroll{height:calc(100% - 30px - 62px);overflow:hidden;padding:0 18px}
+  .serif{font-family:"Instrument Serif",serif;font-style:italic;font-weight:400}
+  .muted{color:#6B6F76}
+  .laiton{color:#9C7F3C}
+  .top{display:flex;justify-content:space-between;align-items:center;margin:6px 0 14px}
+  .loc{font-size:11px;letter-spacing:.04em}
+  .loc b{font-weight:500;color:#13161B;font-size:13px;letter-spacing:0}
+  .bell{width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid #E6E0D6;display:grid;place-items:center;font-size:13px}
+  .search{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #E6E0D6;border-radius:999px;padding:11px 14px;font-size:12.5px}
+  .search .f{margin-left:auto;width:26px;height:26px;border-radius:50%;background:#13161B;color:#F6F3EE;display:grid;place-items:center;font-size:11px}
+  .chips{display:flex;gap:7px;margin:12px 0 16px}
+  .chip{font-size:11.5px;padding:7px 13px;border-radius:999px;border:1px solid #E6E0D6;background:#fff}
+  .chip.on{background:#13161B;color:#F6F3EE;border-color:#13161B}
+  .h{display:flex;justify-content:space-between;align-items:baseline;margin:4px 0 10px}
+  .h span{font-size:11px}
+  .h3{font-size:22px}
+  .card{background:#fff;border-radius:20px;overflow:hidden;border:1px solid #EEE8DE}
+  .img{background-size:cover;background-position:center;position:relative}
+  .fav{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;font-size:12px}
+  .tag{position:absolute;top:10px;left:10px;font-size:10px;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.92);font-weight:500}
+  .meta{padding:10px 12px 12px}
+  .t{font-size:13px;font-weight:400}
+  .s{font-size:11px;margin-top:2px}
+  .p{font-size:13px;font-weight:500;margin-top:6px}
+  .p small{font-weight:300;color:#6B6F76}
+  .row{display:flex;gap:12px;overflow:hidden}
+  .tabs{position:absolute;bottom:0;left:0;right:0;height:62px;background:rgba(255,255,255,.96);border-top:1px solid #EEE8DE;display:flex;justify-content:space-around;align-items:center;font-size:10px}
+  .tabs div{display:flex;flex-direction:column;align-items:center;gap:3px;color:#8A8E95}
+  .tabs .on{color:#13161B;font-weight:500}
+  .tabs .on i{background:#C2A25F}
+  .tabs i{width:18px;height:18px;border-radius:6px;background:#E3DED5;display:block}
+  .list .li{display:flex;gap:11px;align-items:center;padding:9px 0;border-bottom:1px solid #EEE8DE}
+  .list .th{width:64px;height:64px;border-radius:14px;background-size:cover;background-position:center;flex:none}
+  .map{height:300px;margin:0 -18px;position:relative;background:
+     radial-gradient(circle at 30% 40%,#e9e4da 0 18%,transparent 19%),
+     linear-gradient(115deg,transparent 46%,#fff 46% 49%,transparent 49%),
+     linear-gradient(20deg,transparent 60%,#fff 60% 62%,transparent 62%),
+     linear-gradient(160deg,#dfe8e3 0 22%,#EDE8DF 22%);}
+  .pin{position:absolute;font-size:10.5px;font-weight:500;background:#13161B;color:#F6F3EE;padding:5px 9px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+  .pin.l{background:#C2A25F;color:#13161B}
+  .me{position:absolute;left:46%;top:52%;width:14px;height:14px;border-radius:50%;background:#3d7bf0;border:3px solid #fff;box-shadow:0 0 0 8px rgba(61,123,240,.18)}
+  .sheet{position:absolute;left:0;right:0;top:300px;bottom:62px;background:#F6F3EE;border-radius:24px 24px 0 0;padding:8px 18px 0;box-shadow:0 -8px 24px rgba(0,0,0,.08)}
+  .grab{width:38px;height:4px;border-radius:4px;background:#D8D1C5;margin:0 auto 10px}
+  .floatsearch{position:absolute;top:40px;left:18px;right:18px}
+</style>
+
+<h2>Accueil de l'app — fond clair</h2>
+<p class="subtitle">Trois façons d'accueillir l'acheteur (sans compte) : annonces près de lui, recherche et filtres. Clique sur celle qui te parle.</p>
+
+<div class="m-wrap">
+
+  <!-- A -->
+  <div class="m-col" data-choice="a" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="scroll">
+        <div class="top">
+          <div class="loc muted">PRÈS DE VOUS<br><b>Cocody, Abidjan ▾</b></div>
+          <div class="bell">🔔</div>
+        </div>
+        <div style="font-size:26px;line-height:1.1;margin-bottom:14px">Bonsoir,<br><span class="serif laiton">où aimeriez-vous vivre ?</span></div>
+        <div class="search"><span>⌕</span><span class="muted">Quartier, type de logement…</span><span class="f">≡</span></div>
+        <div class="chips"><span class="chip on">Tout</span><span class="chip">Au mois</span><span class="chip">À la nuit</span><span class="chip">À vendre</span></div>
+        <div class="h"><div class="h3 serif">Autour de vous</div><span class="muted">Voir tout</span></div>
+        <div class="row">
+          <div class="card" style="width:200px;flex:none">
+            <div class="img" style="height:150px;background-image:url(/files/villa-piscine.webp)"><span class="tag">Au mois</span><span class="fav">♡</span></div>
+            <div class="meta"><div class="t">Villa avec piscine</div><div class="s muted">Riviera 3 · 1,2 km</div><div class="p">650 000 F <small>/ mois</small></div></div>
+          </div>
+          <div class="card" style="width:200px;flex:none">
+            <div class="img" style="height:150px;background-image:url(/files/appartement-lumineux.webp)"><span class="tag">À la nuit</span><span class="fav">♡</span></div>
+            <div class="meta"><div class="t">Studio lumineux</div><div class="s muted">Angré · 2 km</div><div class="p">25 000 F <small>/ nuit</small></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tabs"><div class="on"><i></i>Explorer</div><div><i></i>Favoris</div><div><i></i>Demandes</div><div><i></i>Profil</div></div>
+    </div>
+    <div class="m-cap"><b>A · Accueil chaleureux</b><span class="muted">Une phrase d'accueil douce en serif, la recherche, puis un carrousel « Autour de vous ». Calme, aéré, proche du site.</span></div>
+  </div>
+
+  <!-- B -->
+  <div class="m-col" data-choice="b" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="scroll">
+        <div class="top">
+          <div style="display:flex;align-items:center;gap:8px">
+            <svg width="26" height="26" viewBox="0 0 48 48"><path d="M24 3 L45 20 V41 a4 4 0 0 1 -4 4 H7 a4 4 0 0 1 -4 -4 V20 Z" fill="#13161B"/><path d="M12 22 L17 37 L24 28 L31 37 L36 22" fill="none" stroke="#F6F3EE" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-weight:500;letter-spacing:.14em;font-size:13px">WELLY</span>
+          </div>
+          <div class="bell">⌕</div>
+        </div>
+        <div class="chips" style="margin-top:0"><span class="chip on">Au mois</span><span class="chip">À la nuit</span><span class="chip">À vendre</span><span class="chip">≡ Filtres</span></div>
+        <div class="card" style="margin-bottom:12px">
+          <div class="img" style="height:230px;background-image:url(/files/salon-moderne.webp)"><span class="tag">Nouveau · Cocody</span><span class="fav">♡</span></div>
+          <div class="meta" style="display:flex;justify-content:space-between;align-items:end">
+            <div><div class="t" style="font-size:15px">Appartement 3 pièces</div><div class="s muted">Cocody Danga · 800 m · Meublé</div></div>
+            <div class="p" style="text-align:right">450 000 F<br><small>/ mois</small></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="img" style="height:200px;background-image:url(/files/maison-jardin.webp)"><span class="tag">Riviera</span><span class="fav">♡</span></div>
+          <div class="meta"><div class="t">Maison avec jardin</div></div>
+        </div>
+      </div>
+      <div class="tabs"><div class="on"><i></i>Explorer</div><div><i></i>Favoris</div><div><i></i>Demandes</div><div><i></i>Profil</div></div>
+    </div>
+    <div class="m-cap"><b>B · Fil de photos</b><span class="muted">Le logo, les types d'offre en haut, puis de grandes photos l'une sous l'autre. Les logements parlent d'eux-mêmes, façon magazine.</span></div>
+  </div>
+
+  <!-- C -->
+  <div class="m-col" data-choice="c" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="sb"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="scroll" style="padding:0 18px;position:static">
+        <div class="map">
+          <span class="pin" style="left:18%;top:62%">450 k</span>
+          <span class="pin l" style="left:58%;top:34%">25 k/nuit</span>
+          <span class="pin" style="left:66%;top:70%">650 k</span>
+          <span class="pin" style="left:28%;top:30%">85 M</span>
+          <span class="me"></span>
+        </div>
+        <div class="floatsearch"><div class="search" style="box-shadow:0 6px 18px rgba(0,0,0,.08)"><span>⌕</span><span class="muted">Cocody, Abidjan</span><span class="f">≡</span></div></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="h"><div class="h3 serif">12 logements ici</div><span class="muted">Trier</span></div>
+          <div class="list">
+            <div class="li"><div class="th" style="background-image:url(/files/appartement-lumineux.webp)"></div><div><div class="t">Studio lumineux</div><div class="s muted">Angré · À la nuit</div><div class="p">25 000 F <small>/ nuit</small></div></div></div>
+            <div class="li"><div class="th" style="background-image:url(/files/chambre.webp)"></div><div><div class="t">Appartement 2 pièces</div><div class="s muted">Cocody · Au mois</div><div class="p">280 000 F <small>/ mois</small></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tabs"><div class="on"><i></i>Explorer</div><div><i></i>Favoris</div><div><i></i>Demandes</div><div><i></i>Profil</div></div>
+    </div>
+    <div class="m-cap"><b>C · Carte d'abord</b><span class="muted">Une carte du quartier avec les prix, et la liste qui remonte du bas. Idéal pour « près de moi », un peu plus technique.</span></div>
+  </div>
+
+</div>

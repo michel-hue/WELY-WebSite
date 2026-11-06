@@ -79,11 +79,11 @@ Site d'information, sans espace utilisateur.
 ### 3. Backend et base de données
 
 - API développée avec NestJS (`api_project/`), utilisée par l'application mobile
-- Gestion des rôles, des annonces et des réservations
-- Authentification (inscription, connexion) gérée par Neon
-- Stockage des données et des images
-- **État actuel : itération 1 en cours** — authentification et gestion des annonces disponibles ; réservations et upload d'images à venir. Voir `api_project/README.md` pour le setup et la liste des endpoints.
-> La base de données est hébergée sur **Neon** (PostgreSQL), qui prend aussi en charge l'authentification. L'API est développée par nos soins avec **NestJS**.
+- Mise en relation : WELLY n'encaisse rien. L'acheteur contacte le vendeur (WhatsApp, appel) ou lui envoie une **demande** (au mois, à la nuit avec dates, achat).
+- Connexion **sans mot de passe** par code SMS ou WhatsApp, gérée par l'API.
+- Annonces multi-offres avec expiration automatique, photos, recherche autour de moi, favoris, signalements, notifications.
+- **État actuel : refonte terminée** (novembre 2026). Voir [`api_project/README.md`](api_project/README.md) et la documentation interactive `/docs`.
+> La base de données est hébergée sur **Neon** (PostgreSQL + PostGIS). L'authentification est gérée par l'API **NestJS** (codes à usage unique), pas par Neon.
 
 ---
 
@@ -95,7 +95,7 @@ Site d'information, sans espace utilisateur.
 | Site vitrine | [Nuxt](https://nuxt.com) |
 | Backend / API | [NestJS](https://nestjs.com) |
 | Base de données | [Neon](https://neon.tech) (PostgreSQL) |
-| Authentification | [Neon](https://neon.tech) |
+| Authentification | API NestJS (code SMS / WhatsApp, sans mot de passe) |
 
 ---
 
@@ -117,7 +117,7 @@ flowchart TD
 - Consultation et réservation de maisons/appartements
 - Rôle acheteur par défaut, passage en vendeur depuis le compte
 - Publication/gestion d'annonces avec photos
-- Authentification via Neon
+- Connexion par code SMS / WhatsApp, sans mot de passe
 
 ## Setup
 
