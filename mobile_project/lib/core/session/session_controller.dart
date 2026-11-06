@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/api_client.dart';
 import '../api/api_error.dart';
+import '../push/push_service.dart';
 import 'session_store.dart';
 
 class Me {
@@ -91,6 +92,7 @@ class SessionController extends AsyncNotifier<Me?> {
       });
 
   Future<void> logout() async {
+    await ref.read(pushRegistrarProvider).unregister();
     final refresh = await _store.readRefresh();
     if (refresh != null) {
       try {

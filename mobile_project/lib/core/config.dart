@@ -12,5 +12,6 @@ String get apiBaseUrl {
   return 'http://localhost:3000/v1';
 }
 
-/// Version affichée dans « À propos » (même valeur que `pubspec.yaml`).
-const appVersion = '1.0.0';
+/// Version affichée dans « À propos ». Doit rester égale à celle de `pubspec.yaml`
+/// (vérifié par `test/core/config_test.dart`) ; surchargeable via `--dart-define=APP_VERSION=...`.
+const appVersion = String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
